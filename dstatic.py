@@ -1,6 +1,8 @@
 """ Snow / static simulation using curses. """
 
+import argparse
 import curses
+import sys
 from time import sleep
 from random import randint
 
@@ -19,7 +21,7 @@ def set_curses_colors():
     return 8
 
 
-def static(screen):
+def static(screen, delay):
     number_of_pairs = set_curses_colors()
     curses.curs_set(0)  # Set the cursor to off.
 
@@ -50,11 +52,29 @@ def static(screen):
             screen.clear()
             screen.refresh()
             break
-        sleep(0.09)
+        sleep(delay)
+
+
+def delay_positive_int(value):
+    try:
+        int_value = int(value)
+        if int_value < 0 or int_value >= 10:
+            raise argparse.ArgumentTypeError(f"{value} is an invalid positive int value")
+        return round((int_value / 100) * (0.5 + int_value/2), 2)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"{value} is an invalid positive int value")
+
+
+def argument_parsing(argv):
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-d", dest="delay", default=0.1, type=delay_positive_int,
+                        help="Delay setting (speed):  0 - Fast, 4 - Default, 9 - Slow")
+    return parser.parse_args(argv)
 
 
 def main():
-    curses.wrapper(static)
+    args = argument_parsing(sys.argv[1:])
+    curses.wrapper(static, args.delay)
 
 
 if __name__ == "__main__":
