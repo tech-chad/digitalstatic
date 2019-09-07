@@ -29,3 +29,11 @@ def test_delay_positive_int_error(test_values):
 def test_parser_arguments_delay(test_values, expected_results):
     result = dstatic.argument_parsing(test_values)
     assert result.delay == expected_results
+
+
+@pytest.mark.parametrize("test_values, expected_results", [
+    ([], False), (["-b"], True)
+])
+def test_parser_arguments_black_white(test_values,expected_results):
+    result = dstatic.argument_parsing(test_values)
+    assert result.black_white == expected_results

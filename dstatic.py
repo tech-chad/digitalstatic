@@ -21,13 +21,23 @@ def set_curses_colors():
     return 8
 
 
-def static(screen, delay):
-    number_of_pairs = set_curses_colors()
+def set_curses_black_white():
+    curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_BLACK)
+    curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_BLACK)
+    curses.init_pair(3, curses.COLOR_WHITE, curses.COLOR_WHITE)
+    return 3
+
+
+def static(screen, delay, black_white):
+    if black_white:
+        number_of_pairs = set_curses_black_white()
+    else:
+        number_of_pairs = set_curses_colors()
+
     curses.curs_set(0)  # Set the cursor to off.
+    screen.timeout(0)  # Turn blocking off for screen.getch().
 
     size_y, size_x = screen.getmaxyx()
-
-    screen.timeout(0)  # Turn blocking off for screen.getch().
     while True:
         resize = curses.is_term_resized(size_y, size_x)
         if resize is True:
@@ -69,12 +79,14 @@ def argument_parsing(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", dest="delay", default=0.1, type=delay_positive_int,
                         help="Delay setting (speed):  0 - Fast, 4 - Default, 9 - Slow")
+    parser.add_argument("-b", dest="black_white", action="store_true",
+                        help="Enable black and white mode")
     return parser.parse_args(argv)
 
 
 def main():
     args = argument_parsing(sys.argv[1:])
-    curses.wrapper(static, args.delay)
+    curses.wrapper(static, args.delay, args.black_white)
 
 
 if __name__ == "__main__":
