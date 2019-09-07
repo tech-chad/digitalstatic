@@ -62,3 +62,11 @@ def test_parser_arguments_black_white(test_values,expected_results):
 def test_argument_parsing_start(test_values, expected_results):
     result = dstatic.argument_parsing(test_values)
     assert result.start_timer == expected_results
+
+
+@pytest.mark.parametrize("test_values, expected_results", [
+    ([], None), (["-r20"], 20), (["-r500"], 500)
+])
+def test_argument_parsing_run(test_values, expected_results):
+    result = dstatic.argument_parsing(test_values)
+    assert result.run_timer == expected_results

@@ -2,6 +2,7 @@
 
 import argparse
 import curses
+import datetime
 import sys
 from time import sleep
 from random import randint
@@ -28,7 +29,7 @@ def set_curses_black_white():
     return 3
 
 
-def static(screen, delay, black_white):
+def static(screen, delay, black_white, run_timer):
     if black_white:
         number_of_pairs = set_curses_black_white()
     else:
@@ -38,6 +39,8 @@ def static(screen, delay, black_white):
     screen.timeout(0)  # Turn blocking off for screen.getch().
 
     size_y, size_x = screen.getmaxyx()
+    if run_timer:
+        end_time = datetime.datetime.now() + datetime.timedelta(seconds=run_timer)
     while True:
         resize = curses.is_term_resized(size_y, size_x)
         if resize is True:
@@ -59,6 +62,10 @@ def static(screen, delay, black_white):
 
         ch = screen.getch()
         if ch in [81, 113]:
+            screen.clear()
+            screen.refresh()
+            break
+        if run_timer and datetime.datetime.now() >= end_time:
             screen.clear()
             screen.refresh()
             break
@@ -95,13 +102,15 @@ def argument_parsing(argv):
                         help="Enable black and white mode")
     parser.add_argument("-s", dest="start_timer", type=positive_int, default=0,
                         help="Set a start timer in seconds", metavar="SECONDS")
+    parser.add_argument("-r", dest="run_timer", type=positive_int, default=None,
+                        metavar="SECONDS", help="Set a run timer in seconds")
     return parser.parse_args(argv)
 
 
 def main():
     args = argument_parsing(sys.argv[1:])
     sleep(args.start_timer)
-    curses.wrapper(static, args.delay, args.black_white)
+    curses.wrapper(static, args.delay, args.black_white, args.run_timer)
 
 
 if __name__ == "__main__":
