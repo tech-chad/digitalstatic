@@ -75,17 +75,32 @@ def delay_positive_int(value):
         raise argparse.ArgumentTypeError(f"{value} is an invalid positive int value")
 
 
+# For use with arg parse to check to see if value is positive int.
+def positive_int(value):
+    try:
+        int_value = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"{value} is an invalid positive int value")
+    else:
+        if int_value <= 0:
+            raise argparse.ArgumentTypeError(f"{value} is an invalid positive int value")
+    return int_value
+
+
 def argument_parsing(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", dest="delay", default=0.1, type=delay_positive_int,
                         help="Delay setting (speed):  0 - Fast, 4 - Default, 9 - Slow")
     parser.add_argument("-b", dest="black_white", action="store_true",
                         help="Enable black and white mode")
+    parser.add_argument("-s", dest="start_timer", type=positive_int, default=0,
+                        help="Set a start timer in seconds", metavar="SECONDS")
     return parser.parse_args(argv)
 
 
 def main():
     args = argument_parsing(sys.argv[1:])
+    sleep(args.start_timer)
     curses.wrapper(static, args.delay, args.black_white)
 
 
