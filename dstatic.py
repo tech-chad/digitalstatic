@@ -11,6 +11,7 @@ version = "0.4"
 
 
 def set_curses_colors():
+    """ Set the color pairs in the curses module. """
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_WHITE)
     curses.init_pair(3, curses.COLOR_BLUE, curses.COLOR_BLUE)
@@ -23,6 +24,7 @@ def set_curses_colors():
 
 
 def set_curses_black_white():
+    """ Set black and white color pairs for use with black and white mode. """
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_BLACK)
     curses.init_pair(3, curses.COLOR_WHITE, curses.COLOR_WHITE)
@@ -30,6 +32,7 @@ def set_curses_black_white():
 
 
 def static(screen, delay, black_white, run_timer):
+    """ Main curses window. """
     if black_white:
         number_of_pairs = set_curses_black_white()
     else:
@@ -73,6 +76,13 @@ def static(screen, delay, black_white, run_timer):
 
 
 def delay_positive_int(value):
+    """
+    Used with argparse module.
+
+    Checks to see if value is positive int within 0 and 10 then converts it to
+    value for the delay time.
+    """
+    # TODO move the conversion to a separate function.
     try:
         int_value = int(value)
         if int_value < 0 or int_value >= 10:
@@ -82,8 +92,8 @@ def delay_positive_int(value):
         raise argparse.ArgumentTypeError(f"{value} is an invalid positive int value")
 
 
-# For use with arg parse to check to see if value is positive int.
 def positive_int(value):
+    """ Used by argparse module.  Checks to see if the value is positive. """
     try:
         int_value = int(value)
     except ValueError:
@@ -95,6 +105,7 @@ def positive_int(value):
 
 
 def argument_parsing(argv):
+    """ Command line argument setup and parsing by argparse. """
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", dest="delay", default=0.1, type=delay_positive_int,
                         help="Delay setting (speed):  0 - Fast, 4 - Default, 9 - Slow")
@@ -108,6 +119,7 @@ def argument_parsing(argv):
 
 
 def main():
+    """ Main function. """
     args = argument_parsing(sys.argv[1:])
     sleep(args.start_timer)
     curses.wrapper(static, args.delay, args.black_white, args.run_timer)

@@ -9,6 +9,7 @@ import dstatic
     ("5", 0.15), ("6", 0.21), ("7", 0.28), ("8", 0.36), ("9", 0.45)
 ])
 def test_delay_positive_int_normal(test_values, expected_results):
+    """ Tests that the delay time conversion formula is working. """
     result = dstatic.delay_positive_int(test_values)
     assert result == expected_results
 
@@ -17,6 +18,7 @@ def test_delay_positive_int_normal(test_values, expected_results):
     "-5", "10", "100", "2.5", " ", "Test", "test&*#"
 ])
 def test_delay_positive_int_error(test_values):
+    """ Testing delay_positive_int will raise an error. """
     with pytest.raises(dstatic.argparse.ArgumentTypeError):
         dstatic.delay_positive_int(test_values)
 
@@ -44,6 +46,7 @@ def test_positive_int_error(test_values):
     (["-d9"], 0.45)
 ])
 def test_parser_arguments_delay(test_values, expected_results):
+    """ Testing a single argument -d (delay option). """
     result = dstatic.argument_parsing(test_values)
     assert result.delay == expected_results
 
@@ -52,6 +55,7 @@ def test_parser_arguments_delay(test_values, expected_results):
     ([], False), (["-b"], True)
 ])
 def test_parser_arguments_black_white(test_values,expected_results):
+    """ Testing single argument -b (black & white mode). """
     result = dstatic.argument_parsing(test_values)
     assert result.black_white == expected_results
 
@@ -60,6 +64,7 @@ def test_parser_arguments_black_white(test_values,expected_results):
     ([], 0), (["-s 5"], 5), (["-s500"], 500)
 ])
 def test_argument_parsing_start(test_values, expected_results):
+    """ Testing single argument -s SECONDS (start timer option). """
     result = dstatic.argument_parsing(test_values)
     assert result.start_timer == expected_results
 
@@ -68,5 +73,6 @@ def test_argument_parsing_start(test_values, expected_results):
     ([], None), (["-r20"], 20), (["-r500"], 500)
 ])
 def test_argument_parsing_run(test_values, expected_results):
+    """ Testing single argument -r SECONDS (run timer option). """
     result = dstatic.argument_parsing(test_values)
     assert result.run_timer == expected_results
