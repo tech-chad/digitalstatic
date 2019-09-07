@@ -4,8 +4,8 @@ import argparse
 import curses
 import datetime
 import sys
-from time import sleep
 from random import randint
+from time import sleep
 
 version = "0.4"
 
@@ -24,7 +24,7 @@ def set_curses_colors():
 
 
 def set_curses_black_white():
-    """ Set black and white color pairs for use with black and white mode. """
+    """ Set black and white color pairs in the curses module. """
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_BLACK)
     curses.init_pair(3, curses.COLOR_WHITE, curses.COLOR_WHITE)
@@ -57,10 +57,16 @@ def static(screen, delay, black_white, run_timer):
                 if rand <= 9:
                     pass
                 elif rand <= 11:
-                    screen.addstr(y, x, " ", curses.color_pair(randint(1, number_of_pairs)) +
+                    screen.addstr(y,
+                                  x,
+                                  " ",
+                                  curses.color_pair(randint(1, number_of_pairs)) +
                                   curses.A_STANDOUT + curses.A_BOLD)
                 else:
-                    screen.addstr(y, x, " ", curses.color_pair(randint(1, number_of_pairs)))
+                    screen.addstr(y,
+                                  x,
+                                  " ",
+                                  curses.color_pair(randint(1, number_of_pairs)))
         screen.refresh()
 
         ch = screen.getch()
@@ -78,9 +84,8 @@ def static(screen, delay, black_white, run_timer):
 def delay_positive_int(value):
     """
     Used with argparse module.
-
-    Checks to see if value is positive int within 0 and 10 then converts it to
-    value for the delay time.
+    Checks to see if value is positive int within 0 and 10 then
+    converts it to value for the delay time.
     """
     # TODO move the conversion to a separate function.
     try:
@@ -93,7 +98,10 @@ def delay_positive_int(value):
 
 
 def positive_int(value):
-    """ Used by argparse module.  Checks to see if the value is positive. """
+    """
+    Used by argparse module.
+    Checks to see if the value is positive.
+    """
     try:
         int_value = int(value)
     except ValueError:
