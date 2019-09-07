@@ -7,7 +7,7 @@ import sys
 from time import sleep
 from random import randint
 
-version = "0.3"
+version = "0.4"
 
 
 def set_curses_colors():
