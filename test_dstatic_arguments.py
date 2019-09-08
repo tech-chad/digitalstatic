@@ -5,22 +5,22 @@ import dstatic
 
 
 @pytest.mark.parametrize("test_values, expected_results", [
-    ("0", 0), ("1", 0.01), ("2", 0.03), ("3", 0.06), ("4", 0.1),
-    ("5", 0.15), ("6", 0.21), ("7", 0.28), ("8", 0.36), ("9", 0.45)
+    ("0", 0), ("1", 1), ("2", 2), ("3", 3), ("4", 4),
+    ("5", 5), ("6", 6), ("7", 7), ("8", 8), ("9", 9)
 ])
-def test_delay_positive_int_normal(test_values, expected_results):
+def test_positive_int_zero_to_nine_normal(test_values, expected_results):
     """ Tests that the delay time conversion formula is working. """
-    result = dstatic.delay_positive_int(test_values)
+    result = dstatic.positive_int_zero_to_nine(test_values)
     assert result == expected_results
 
 
 @pytest.mark.parametrize("test_values", [
-    "-5", "10", "100", "2.5", " ", "Test", "test&*#"
+    "-5", "10", "100", "2.5", " ", "Test", "test&*#", "",
 ])
-def test_delay_positive_int_error(test_values):
+def test_positive_int_zero_to_nine_error(test_values):
     """ Testing delay_positive_int will raise an error. """
     with pytest.raises(dstatic.argparse.ArgumentTypeError):
-        dstatic.delay_positive_int(test_values)
+        dstatic.positive_int_zero_to_nine(test_values)
 
 
 @pytest.mark.parametrize("test_values, expected_results", [
@@ -41,9 +41,9 @@ def test_positive_int_error(test_values):
 
 
 @pytest.mark.parametrize("test_values, expected_results", [
-    ([], 0.1), (["-d0"], 0), (["-d 1"], 0.01), (["-d", "2"], 0.03),
-    (["-d3"], 0.06), (["-d 4"], 0.1), (["-d", "5"], 0.15), (["-d6"], 0.21),
-    (["-d 7"], 0.28), (["-d", "8"], 0.36), (["-d9"], 0.45)
+    ([], 4), (["-d0"], 0), (["-d 1"], 1), (["-d", "2"], 2),
+    (["-d3"], 3), (["-d 4"], 4), (["-d", "5"], 5), (["-d6"], 6),
+    (["-d 7"], 7), (["-d", "8"], 8), (["-d9"], 9)
 ])
 def test_parser_arguments_delay(test_values, expected_results):
     """ Testing a single argument -d (delay option). """

@@ -81,20 +81,24 @@ def static(screen, delay, black_white, run_timer):
         sleep(delay)
 
 
-def delay_positive_int(value):
+def convert_delay_number_to_delay_time(delay_num):
+    return round((delay_num / 100) * (0.5 + delay_num/2), 2)
+
+
+def positive_int_zero_to_nine(value):
     """
     Used with argparse module.
-    Checks to see if value is positive int within 0 and 10 then
-    converts it to value for the delay time.
+    Checks to see if value is positive int between 0 and 10.
     """
-    # TODO move the conversion to a separate function.
     try:
         int_value = int(value)
         if int_value < 0 or int_value >= 10:
-            raise argparse.ArgumentTypeError(f"{value} is an invalid positive int value")
-        return round((int_value / 100) * (0.5 + int_value/2), 2)
+            raise argparse.ArgumentTypeError(f"{value} is an invalid positive "
+                                             f"int value 0 to 9")
+        return int_value
     except ValueError:
-        raise argparse.ArgumentTypeError(f"{value} is an invalid positive int value")
+        raise argparse.ArgumentTypeError(f"{value} is an invalid positive int "
+                                         f"value 0 to 9")
 
 
 def positive_int(value):
@@ -115,7 +119,7 @@ def positive_int(value):
 def argument_parsing(argv):
     """ Command line argument setup and parsing by argparse. """
     parser = argparse.ArgumentParser()
-    parser.add_argument("-d", dest="delay", default=0.1, type=delay_positive_int,
+    parser.add_argument("-d", dest="delay", default=4, type=positive_int_zero_to_nine,
                         help="Delay setting (speed):  0 - Fast, 4 - Default, 9 - Slow")
     parser.add_argument("-b", dest="black_white", action="store_true",
                         help="Enable black and white mode")
@@ -130,7 +134,8 @@ def main():
     """ Main function. """
     args = argument_parsing(sys.argv[1:])
     sleep(args.start_timer)
-    curses.wrapper(static, args.delay, args.black_white, args.run_timer)
+    delay_time = convert_delay_number_to_delay_time(args.delay)
+    curses.wrapper(static, delay_time, args.black_white, args.run_timer)
 
 
 if __name__ == "__main__":
