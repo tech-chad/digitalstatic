@@ -135,7 +135,12 @@ def main():
     args = argument_parsing(sys.argv[1:])
     sleep(args.start_timer)
     delay_time = convert_delay_number_to_delay_time(args.delay)
-    curses.wrapper(static, delay_time, args.black_white, args.run_timer)
+    # print("dstatic")
+    try:
+        curses.wrapper(static, delay_time, args.black_white, args.run_timer)
+    except KeyboardInterrupt:
+        pass
+    return 0
 
 
 if __name__ == "__main__":
