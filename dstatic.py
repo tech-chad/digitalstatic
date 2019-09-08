@@ -65,7 +65,7 @@ def static(screen, delay, black_white, run_timer):
                 else:
                     screen.addstr(y,
                                   x,
-                                  " ",
+                                  "1",
                                   curses.color_pair(randint(1, number_of_pairs)))
         screen.refresh()
 
