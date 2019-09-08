@@ -63,7 +63,6 @@ def test_dstatic_exit_start_timer(test_key):
     """
     with Runner(*dstatic_cmd("-s1")) as h:
         h.default_timeout = 2
-        # h.wait_interval = 3
         h.await_text("1")
         h.write(test_key)
         h.press("Enter")
@@ -97,3 +96,17 @@ def test_dstatic_start_timer():
         h.default_timeout = 3
         h.await_text("1")
 
+
+@pytest.mark.parametrize("test_keys", [
+    " ", "h", "H", "8", ";", "q",  "e", "*", "", "'", "0", "!",
+])
+def test_dstatic_exit_screen_save_mode(test_keys):
+    """
+    Test a same of any key will exit dstatic
+    in screen save mode.
+    """
+    with Runner(*dstatic_cmd("-S")) as h:
+        h.await_text("1")
+        h.write(test_keys)
+        h.press("Enter")
+        h.await_exit()

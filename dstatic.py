@@ -31,7 +31,7 @@ def set_curses_black_white():
     return 3
 
 
-def static(screen, delay, black_white, run_timer):
+def static(screen, delay, black_white, run_timer, screen_saver_mode):
     """ Main curses window. """
     if black_white:
         number_of_pairs = set_curses_black_white()
@@ -70,6 +70,11 @@ def static(screen, delay, black_white, run_timer):
         screen.refresh()
 
         ch = screen.getch()
+        print(ch, file=open("debug.txt", "w"))
+        if screen_saver_mode and ch != -1:
+            screen.clear()
+            screen.refresh()
+            break
         if ch in [81, 113]:
             screen.clear()
             screen.refresh()
@@ -127,6 +132,8 @@ def argument_parsing(argv):
                         help="Set a start timer in seconds", metavar="SECONDS")
     parser.add_argument("-r", dest="run_timer", type=positive_int, default=None,
                         metavar="SECONDS", help="Set a run timer in seconds")
+    parser.add_argument("-S", dest="screen_saver", action="store_true",
+                        help="Screen saver mode.  Any key will quit")
     return parser.parse_args(argv)
 
 
@@ -137,7 +144,8 @@ def main():
     delay_time = convert_delay_number_to_delay_time(args.delay)
     # print("dstatic")
     try:
-        curses.wrapper(static, delay_time, args.black_white, args.run_timer)
+        curses.wrapper(static, delay_time, args.black_white,
+                       args.run_timer, args.screen_saver)
     except KeyboardInterrupt:
         pass
     return 0

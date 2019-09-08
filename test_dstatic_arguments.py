@@ -76,3 +76,11 @@ def test_argument_parsing_run(test_values, expected_results):
     """ Testing single argument -r SECONDS (run timer option). """
     result = dstatic.argument_parsing(test_values)
     assert result.run_timer == expected_results
+
+
+@pytest.mark.parametrize("test_values, expected_results", [
+    ([], False), (["-S"], True)
+])
+def test_argument_parsing_screen_saver(test_values, expected_results):
+    result = dstatic.argument_parsing(test_values)
+    assert result.screen_saver == expected_results
