@@ -9,6 +9,8 @@ from time import sleep
 
 version = "0.5"
 
+curses_number_ch_codes = {48: 0, 49: 1, 50: 2, 51: 3, 52: 4, 53: 5, 54: 6, 55: 7, 56: 8, 57: 9}
+
 
 def set_curses_colors():
     """ Set the color pairs in the curses module. """
@@ -70,18 +72,26 @@ def static(screen, delay, black_white, run_timer, screen_saver_mode):
 
         ch = screen.getch()
         print(ch, file=open("debug.txt", "w"))
-        if screen_saver_mode and ch != -1:
-            screen.clear()
-            screen.refresh()
-            break
-        if ch in [81, 113]:
-            screen.clear()
-            screen.refresh()
-            break
         if run_timer and datetime.datetime.now() >= end_time:
             screen.clear()
             screen.refresh()
             break
+        if screen_saver_mode and ch != -1:
+            screen.clear()
+            screen.refresh()
+            break
+        elif ch != -1:
+            if ch in [81, 113]:
+                screen.clear()
+                screen.refresh()
+                break
+            elif ch == 98:  # b
+                number_of_pairs = set_curses_black_white()
+            elif ch == 99:  # c
+                number_of_pairs = set_curses_colors()
+            elif ch in curses_number_ch_codes.keys():
+                number = curses_number_ch_codes[ch]
+                delay = convert_delay_number_to_delay_time(number)
         sleep(delay)
 
 
