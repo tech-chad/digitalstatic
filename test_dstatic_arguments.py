@@ -84,3 +84,13 @@ def test_argument_parsing_run(test_values, expected_results):
 def test_argument_parsing_screen_saver(test_values, expected_results):
     result = dstatic.argument_parsing(test_values)
     assert result.screen_saver == expected_results
+
+
+@pytest.mark.parametrize("test_values, expected_results", [
+    ([], False), (["--list_commands"], True)
+])
+def test_argument_parsing_list_commands(test_values, expected_results):
+    result = dstatic.argument_parsing(test_values)
+    assert result.list_commands == expected_results
+
+

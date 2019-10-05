@@ -110,3 +110,9 @@ def test_dstatic_exit_screen_save_mode(test_keys):
         h.write(test_keys)
         h.press("Enter")
         h.await_exit()
+
+
+def test_dstatic_list_commands():
+    with Runner(*dstatic_cmd("--list_commands")) as h:
+        h.await_text("List of running commands:")
+

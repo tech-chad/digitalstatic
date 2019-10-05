@@ -130,6 +130,14 @@ def positive_int(value):
     return int_value
 
 
+def list_commands():
+    print("List of running commands:")
+    print(" Q     To quit")
+    print(" b     Enable black and white mode")
+    print(" c     Enable color mode")
+    print(" 0 - 9 Delay. 0-Fast, 4-Default, 9-Slow")
+
+
 def argument_parsing(argv):
     """ Command line argument setup and parsing by argparse. """
     parser = argparse.ArgumentParser()
@@ -143,12 +151,18 @@ def argument_parsing(argv):
                         metavar="SECONDS", help="Set a run timer in seconds")
     parser.add_argument("-S", dest="screen_saver", action="store_true",
                         help="Screen saver mode.  Any key will quit")
+    parser.add_argument("--list_commands", action="store_true",
+                        help="List running commands.")
     return parser.parse_args(argv)
 
 
 def main():
     """ Main function. """
     args = argument_parsing(sys.argv[1:])
+    if args.list_commands:
+        list_commands()
+        return
+
     sleep(args.start_timer)
     delay_time = convert_delay_number_to_delay_time(args.delay)
     # print("dstatic")
