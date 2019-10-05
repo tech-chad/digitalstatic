@@ -42,8 +42,7 @@ def static(screen, delay, black_white, run_timer, screen_saver_mode):
     screen.timeout(0)  # Turn blocking off for screen.getch().
 
     size_y, size_x = screen.getmaxyx()
-    if run_timer:
-        end_time = datetime.datetime.now() + datetime.timedelta(seconds=run_timer)
+    end_time = datetime.datetime.now() + datetime.timedelta(seconds=run_timer)
     while True:
         resize = curses.is_term_resized(size_y, size_x)
         if resize is True:
@@ -130,7 +129,7 @@ def argument_parsing(argv):
                         help="Enable black and white mode")
     parser.add_argument("-s", dest="start_timer", type=positive_int, default=0,
                         help="Set a start timer in seconds", metavar="SECONDS")
-    parser.add_argument("-r", dest="run_timer", type=positive_int, default=None,
+    parser.add_argument("-r", dest="run_timer", type=positive_int, default=0,
                         metavar="SECONDS", help="Set a run timer in seconds")
     parser.add_argument("-S", dest="screen_saver", action="store_true",
                         help="Screen saver mode.  Any key will quit")

@@ -70,7 +70,7 @@ def test_argument_parsing_start(test_values, expected_results):
 
 
 @pytest.mark.parametrize("test_values, expected_results", [
-    ([], None), (["-r20"], 20), (["-r500"], 500)
+    ([], 0), (["-r20"], 20), (["-r500"], 500)
 ])
 def test_argument_parsing_run(test_values, expected_results):
     """ Testing single argument -r SECONDS (run timer option). """
