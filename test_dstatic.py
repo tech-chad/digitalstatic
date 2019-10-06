@@ -124,3 +124,8 @@ def test_dstatic_list_commands():
     with Runner(*dstatic_cmd("--list_commands")) as h:
         h.await_text("List of running commands:")
 
+
+def test_dstatic_list_colors():
+    with Runner(*dstatic_cmd("--list_colors")) as h:
+        h.await_text("Color List:")
+

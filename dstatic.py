@@ -144,6 +144,11 @@ def list_commands():
     print(" r,t,y,u,i,o,p,[   Set single color")
 
 
+def list_colors():
+    print("Color List:")
+    print(", ".join(color_list))
+
+
 def argument_parsing(argv):
     """ Command line argument setup and parsing by argparse. """
     parser = argparse.ArgumentParser()
@@ -159,6 +164,8 @@ def argument_parsing(argv):
                         metavar="SECONDS", help="Set a run timer in seconds")
     parser.add_argument("-S", dest="screen_saver", action="store_true",
                         help="Screen saver mode.  Any key will quit")
+    parser.add_argument("--list_colors", action="store_true",
+                        help="List available colors and exit.")
     parser.add_argument("--list_commands", action="store_true",
                         help="List running commands.")
     return parser.parse_args(argv)
@@ -169,6 +176,9 @@ def main():
     args = argument_parsing(sys.argv[1:])
     if args.list_commands:
         list_commands()
+        return
+    elif args.list_colors:
+        list_colors()
         return
 
     if args.black_white:
