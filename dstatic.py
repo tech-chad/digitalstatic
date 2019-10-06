@@ -1,3 +1,4 @@
+#! /usr/bin/python3
 """ Snow / static simulation using curses. """
 
 import argparse
