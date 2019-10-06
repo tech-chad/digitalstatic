@@ -40,6 +40,22 @@ def test_positive_int_error(test_values):
         dstatic.positive_int(test_values)
 
 
+@pytest.mark.parametrize("test_value", [
+    "red", "green", "blue", "magenta", "yellow", "cyan", "black"
+])
+def test_color_type_normal(test_value):
+    result = dstatic.color_type(test_value)
+    assert result == test_value
+
+
+@pytest.mark.parametrize("test_values", [
+    "purple", "orange", "color", "word", "12345", "", " ", "*(#"
+])
+def test_color_type_error(test_values):
+    with pytest.raises(dstatic.argparse.ArgumentTypeError):
+        dstatic.color_type(test_values)
+
+
 @pytest.mark.parametrize("test_values, expected_results", [
     ([], 4), (["-d0"], 0), (["-d 1"], 1), (["-d", "2"], 2),
     (["-d3"], 3), (["-d 4"], 4), (["-d", "5"], 5), (["-d6"], 6),
@@ -93,4 +109,11 @@ def test_argument_parsing_list_commands(test_values, expected_results):
     result = dstatic.argument_parsing(test_values)
     assert result.list_commands == expected_results
 
+
+@pytest.mark.parametrize("test_values, expected_results", [
+    ([], None), (["-C", "red"], "red"), (["-C", "yellow"], "yellow")
+])
+def test_argument_parsing_color(test_values, expected_results):
+    result = dstatic.argument_parsing(test_values)
+    assert result.color == expected_results
 
