@@ -11,6 +11,8 @@ version = "0.6"
 
 curses_number_ch_codes = {48: 0, 49: 1, 50: 2, 51: 3, 52: 4, 53: 5, 54: 6, 55: 7, 56: 8, 57: 9}
 color_list = ["red", "green", "blue", "yellow", "magenta", "cyan", "black", "white"]
+curses_ch_codes_color = {114: "red", 116: "green", 121: "blue", 117: "yellow",
+                         105: "magenta", 111: "cyan", 112: "white", 91: "black"}
 
 
 def set_curses_colors():
@@ -77,6 +79,9 @@ def static(screen, delay, color_mode, run_timer, screen_saver_mode):
                 current_color_pair_list = color_pair_dict["bw"]
             elif ch == 99:  # c
                 current_color_pair_list = color_pair_dict["color"]
+            elif ch in curses_ch_codes_color.keys():
+                color = curses_ch_codes_color[ch]
+                current_color_pair_list = color_pair_dict[color]
             elif ch in curses_number_ch_codes.keys():
                 number = curses_number_ch_codes[ch]
                 delay = convert_delay_number_to_delay_time(number)
@@ -132,10 +137,11 @@ def color_type(value):
 
 def list_commands():
     print("List of running commands:")
-    print(" Q     To quit")
-    print(" b     Enable black and white mode")
-    print(" c     Enable color mode")
-    print(" 0 - 9 Delay. 0-Fast, 4-Default, 9-Slow")
+    print(" Q       To quit")
+    print(" b       Enable black and white mode")
+    print(" c       Enable color mode")
+    print(" 0 - 9   Delay. 0-Fast, 4-Default, 9-Slow")
+    print(" r,t,y,u,i,o,p,[   Set single color")
 
 
 def argument_parsing(argv):
