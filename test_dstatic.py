@@ -21,9 +21,9 @@ def test_convert_delay_number_to_delay_time(test_values, expected_results):
 
 
 def test_set_curses_color():
-    with mock.patch.object(dstatic.curses, "init_pair", return_value=None) as mock_init_pair:
+    with mock.patch.object(dstatic.curses, "init_pair", return_value=None) as mock_init:
         dstatic.set_curses_colors()
-        call_count = mock_init_pair.call_count
+        call_count = mock_init.call_count
         assert call_count == 8
 
 

@@ -10,13 +10,14 @@ from time import sleep
 
 version = "0.7"
 
-curses_number_ch_codes = {48: 0, 49: 1, 50: 2, 51: 3, 52: 4, 53: 5, 54: 6, 55: 7, 56: 8, 57: 9}
+curses_number_ch_codes = {48: 0, 49: 1, 50: 2, 51: 3, 52:
+                          4, 53: 5, 54: 6, 55: 7, 56: 8, 57: 9}
 color_list = ["red", "green", "blue", "yellow", "magenta", "cyan", "black", "white"]
 curses_ch_codes_color = {114: "red", 116: "green", 121: "blue", 117: "yellow",
                          105: "magenta", 111: "cyan", 112: "white", 91: "black"}
 
 
-def set_curses_colors():
+def set_curses_colors() -> None:
     """ Set curses colors. """
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_WHITE)
@@ -28,10 +29,11 @@ def set_curses_colors():
     curses.init_pair(8, curses.COLOR_CYAN, curses.COLOR_CYAN)
 
 
-def static(screen, delay, color_mode, run_timer, screen_saver_mode):
+def static(screen, delay: float, color_mode: str, run_timer: int, scrn_saver_mode: bool):
     """ Main curses window. """
-    color_pair_dict = {"blue": [3, 3], "green": [4, 4], "magenta": [5, 5], "yellow": [6, 6],
-                       "red": [7, 7], "cyan": [8, 8], "bw": [1, 1, 2], "black": [1, 1],
+    color_pair_dict = {"blue": [3, 3], "green": [4, 4], "magenta": [5, 5],
+                       "yellow": [6, 6], "red": [7, 7], "cyan": [8, 8],
+                       "bw": [1, 1, 2], "black": [1, 1],
                        "color": [1, 2, 3, 4, 5, 6, 7, 8], "white": [2, 2]}
     set_curses_colors()
     current_color_pair_list = color_pair_dict[color_mode]
@@ -53,7 +55,7 @@ def static(screen, delay, color_mode, run_timer, screen_saver_mode):
                 rand = randint(1, 20)
                 pair_num = choice(current_color_pair_list)
                 if rand <= 10:
-                    pass
+                    pass  # black
                 elif rand <= 15:
                     color_effect = curses.A_STANDOUT + curses.A_BOLD
                     screen.addstr(y, x, " ", curses.color_pair(pair_num) + color_effect)
@@ -62,19 +64,13 @@ def static(screen, delay, color_mode, run_timer, screen_saver_mode):
         screen.refresh()
 
         ch = screen.getch()
-        print(ch, file=open("debug.txt", "w"))
+        # print(ch, file=open("debug.txt", "w"))  # not sure what used for ??
         if run_timer and datetime.datetime.now() >= end_time:
-            screen.clear()
-            screen.refresh()
             break
-        if screen_saver_mode and ch != -1:
-            screen.clear()
-            screen.refresh()
+        if scrn_saver_mode and ch != -1:
             break
         elif ch != -1:
-            if ch in [81, 113]:
-                screen.clear()
-                screen.refresh()
+            if ch in [81, 113]:  # q, Q
                 break
             elif ch == 98:  # b
                 current_color_pair_list = color_pair_dict["bw"]
@@ -88,12 +84,16 @@ def static(screen, delay, color_mode, run_timer, screen_saver_mode):
                 delay = convert_delay_number_to_delay_time(number)
         sleep(delay)
 
+    # clear screen before returning
+    screen.clear()
+    screen.refresh()
 
-def convert_delay_number_to_delay_time(delay_num):
+
+def convert_delay_number_to_delay_time(delay_num: int) -> float:
     return round((delay_num / 100) * (0.5 + delay_num/2), 2)
 
 
-def positive_int_zero_to_nine(value):
+def positive_int_zero_to_nine(value: str) -> int:
     """
     Used with argparse module.
     Checks to see if value is positive int between 0 and 10.
@@ -101,15 +101,13 @@ def positive_int_zero_to_nine(value):
     try:
         int_value = int(value)
         if int_value < 0 or int_value >= 10:
-            raise argparse.ArgumentTypeError(f"{value} is an invalid positive "
-                                             f"int value 0 to 9")
+            raise argparse.ArgumentTypeError(f"{value} is an invalid positive int 0 to 9")
         return int_value
     except ValueError:
-        raise argparse.ArgumentTypeError(f"{value} is an invalid positive int "
-                                         f"value 0 to 9")
+        raise argparse.ArgumentTypeError(f"{value} is an invalid positive int 0 to 9")
 
 
-def positive_int(value):
+def positive_int(value: str) -> int:
     """
     Used by argparse module.
     Checks to see if the value is positive.
@@ -124,7 +122,7 @@ def positive_int(value):
     return int_value
 
 
-def color_type(value):
+def color_type(value: str) -> str:
     """
     Used with argparse
     Checks to see if the value is a valid color and returns
@@ -136,7 +134,7 @@ def color_type(value):
     raise argparse.ArgumentTypeError(f"{value} is an invalid color name")
 
 
-def list_commands():
+def list_commands() -> None:
     print("List of running commands:")
     print(" Q       To quit")
     print(" b       Enable black and white mode")
@@ -145,20 +143,20 @@ def list_commands():
     print(" r,t,y,u,i,o,p,[   Set single color")
 
 
-def list_colors():
+def list_colors() -> None:
     print("Color List:")
     print(", ".join(color_list))
 
 
-def argument_parsing(argv):
+def argument_parsing(argv: list) -> argparse.Namespace:
     """ Command line argument setup and parsing by argparse. """
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", dest="delay", default=4, type=positive_int_zero_to_nine,
                         help="Delay setting (speed):  0 - Fast, 4 - Default, 9 - Slow")
     parser.add_argument("-b", dest="black_white", action="store_true",
                         help="Enable black and white mode. Overrides -C")
-    parser.add_argument("-C", dest="color", type=color_type, default=None, metavar="COLOR",
-                        help="Set a single color to use")
+    parser.add_argument("-C", dest="color", type=color_type, default=None,
+                        metavar="COLOR", help="Set a single color to use")
     parser.add_argument("-s", dest="start_timer", type=positive_int, default=0,
                         help="Set a start timer in seconds", metavar="SECONDS")
     parser.add_argument("-r", dest="run_timer", type=positive_int, default=0,
@@ -172,15 +170,15 @@ def argument_parsing(argv):
     return parser.parse_args(argv)
 
 
-def main():
+def main() -> int:
     """ Main function. """
     args = argument_parsing(sys.argv[1:])
     if args.list_commands:
         list_commands()
-        return
+        return 0
     elif args.list_colors:
         list_colors()
-        return
+        return 0
 
     if args.black_white:
         color_mode = "bw"
@@ -192,8 +190,7 @@ def main():
     sleep(args.start_timer)
     delay_time = convert_delay_number_to_delay_time(args.delay)
     try:
-        curses.wrapper(static, delay_time, color_mode,
-                       args.run_timer, args.screen_saver)
+        curses.wrapper(static, delay_time, color_mode, args.run_timer, args.screen_saver)
     except KeyboardInterrupt:
         pass
     return 0
