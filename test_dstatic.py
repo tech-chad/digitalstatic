@@ -20,11 +20,19 @@ def test_convert_delay_number_to_delay_time(test_values, expected_results):
     assert result == expected_results
 
 
-def test_set_curses_color():
+def test_set_curses_color_mock_call():
     with mock.patch.object(dstatic.curses, "init_pair", return_value=None) as mock_init:
         dstatic.set_curses_colors()
         call_count = mock_init.call_count
         assert call_count == 8
+
+
+def test_set_curses_colors():
+    dstatic.curses.initscr()
+    dstatic.curses.start_color()
+    dstatic.set_curses_colors()
+    result = dstatic.curses.pair_content(8)
+    assert result == (dstatic.curses.COLOR_CYAN, dstatic.curses.COLOR_CYAN)
 
 
 @pytest.mark.parametrize("test_key", ["q", "Q"])
@@ -120,6 +128,56 @@ def test_dstatic_exit_screen_save_mode(test_keys):
         h.await_exit()
 
 
+@pytest.mark.parametrize("cmd, size_change", [
+    ('-vt0', 46), ('-vt0', 48), ('-vt0', 49),
+    ('-ht0', 46), ('-ht0', 48), ('-ht0', 49)
+])
+def test_dstatic_resize(cmd, size_change):
+    with Runner(*dstatic_cmd(), width=50, height=50) as h:
+        h.await_text("1")
+        h.tmux.execute_command('split-window', cmd, '-l', size_change)
+        h.await_text("1")
+
+
+def test_black_and_white_command():
+    with Runner(*dstatic_cmd()) as h:
+        h.await_text("1")
+        h.write("b")
+        h.press("Enter")
+        h.await_text("1")
+
+
+def test_red_color_command():
+    with Runner(*dstatic_cmd()) as h:
+        h.await_text("1")
+        h.write("r")
+        h.press("Enter")
+        h.await_text("1")
+
+
+def test_delay_change():
+    with Runner(*dstatic_cmd()) as h:
+        h.await_text("1")
+        h.write("7")
+        h.press("Enter")
+        h.await_text("1")
+        h.write("4")
+        h.press("Enter")
+        h.await_text("1")
+        h.write("9")
+        h.press("Enter")
+        h.await_text("1")
+        h.write("2")
+        h.press("Enter")
+        h.await_text("1")
+        h.write("0")
+        h.press("Enter")
+        h.await_text("1")
+        h.write("4")
+        h.press("Enter")
+        h.await_text("1")
+
+
 def test_dstatic_list_commands():
     with Runner(*dstatic_cmd("--list_commands")) as h:
         h.await_text("List of running commands:")
@@ -128,4 +186,3 @@ def test_dstatic_list_commands():
 def test_dstatic_list_colors():
     with Runner(*dstatic_cmd("--list_colors")) as h:
         h.await_text("Color List:")
-
