@@ -39,6 +39,8 @@ def static(screen, color_mode: str, argv: argparse.Namespace):
     set_curses_colors()
     current_color_pair_list = color_pair_dict[color_mode]
     delay_time = convert_delay_number_to_delay_time(argv.delay)
+    color_count = cycle_count = 1
+    cycle_colors = argv.cycle_colors
 
     curses.curs_set(0)  # Set the cursor to off.
     screen.timeout(0)  # Turn blocking off for screen.getch().
@@ -55,7 +57,15 @@ def static(screen, color_mode: str, argv: argparse.Namespace):
         for y in range(size_y - 1):
             for x in range(size_x):
                 rand = randint(1, 20)
-                pair_num = choice(current_color_pair_list)
+                if cycle_colors:
+                    pair_num = color_count
+                    if cycle_count >= 200000:
+                        color_count = 1 if color_count == 8 else color_count + 1
+                        cycle_count = 1
+                    else:
+                        cycle_count += 1
+                else:
+                    pair_num = choice(current_color_pair_list)
                 if argv.test_mode:
                     block = "0"
                 else:
@@ -81,8 +91,12 @@ def static(screen, color_mode: str, argv: argparse.Namespace):
                 break
             elif ch == 98:  # b
                 current_color_pair_list = color_pair_dict["bw"]
-            elif ch == 99:  # c
+                cycle_colors = False
+            elif ch == 67:  # C
                 current_color_pair_list = color_pair_dict["color"]
+                cycle_colors = False
+            elif ch == 99:  # c
+                cycle_colors = True
             elif ch in curses_ch_codes_color.keys():
                 color = curses_ch_codes_color[ch]
                 current_color_pair_list = color_pair_dict[color]
@@ -145,7 +159,8 @@ def list_commands() -> None:
     print("List of running commands:")
     print(" Q       To quit")
     print(" b       Enable black and white mode")
-    print(" c       Enable color mode")
+    print(" C       Enable color mode")
+    print(" c       Enable cycle color mode")
     print(" 0 - 9   Delay. 0-Fast, 4-Default, 9-Slow")
     print(" r,t,y,u,i,o,p,[   Set single color")
 
@@ -170,6 +185,8 @@ def argument_parsing(argv: list) -> argparse.Namespace:
                         metavar="SECONDS", help="Set a run timer in seconds")
     parser.add_argument("-S", dest="screen_saver", action="store_true",
                         help="Screen saver mode.  Any key will quit")
+    parser.add_argument("-c", dest="cycle_colors", action="store_true",
+                        help="Cycle through colors")
     parser.add_argument("--list_colors", action="store_true",
                         help="List available colors and exit.")
     parser.add_argument("--list_commands", action="store_true",

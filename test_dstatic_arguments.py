@@ -133,3 +133,10 @@ def test_argument_parsing_test_mode(test_values, expected_results):
     result = dstatic.argument_parsing(test_values)
     assert result.test_mode is expected_results
 
+
+@pytest.mark.parametrize("test_values, expected_results", [
+    ([], False), (["-c"], True)
+])
+def test_argument_parsing_cycle_colors(test_values, expected_results):
+    result = dstatic.argument_parsing(test_values)
+    assert result.cycle_colors is expected_results

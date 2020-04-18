@@ -162,6 +162,26 @@ def test_red_color_command():
         h.await_exit()
 
 
+def test_cycle_color_command():
+    with Runner(*dstatic_cmd()) as h:
+        h.write("c")
+        h.press("Enter")
+        h.await_text(chr(9617))
+        h.write("Q")
+        h.press("Enter")
+        h.await_exit()
+
+
+def test_color_command():
+    with Runner(*dstatic_cmd()) as h:
+        h.write("C")
+        h.press("Enter")
+        h.await_text(chr(9617))
+        h.write("Q")
+        h.press("Enter")
+        h.await_exit()
+
+
 @pytest.mark.parametrize("test_value", ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'])
 def test_delay_change(test_value):
     with Runner(*dstatic_cmd("--test_mode")) as h:
