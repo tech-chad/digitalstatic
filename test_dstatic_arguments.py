@@ -125,3 +125,11 @@ def test_argument_parsing_list_commands(test_values, expected_results):
     result = dstatic.argument_parsing(test_values)
     assert result.list_colors == expected_results
 
+
+@pytest.mark.parametrize("test_values, expected_results", [
+    ([], False), (["--test_mode"], True)
+])
+def test_argument_parsing_test_mode(test_values, expected_results):
+    result = dstatic.argument_parsing(test_values)
+    assert result.test_mode is expected_results
+

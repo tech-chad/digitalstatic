@@ -15,6 +15,7 @@ curses_number_ch_codes = {48: 0, 49: 1, 50: 2, 51: 3, 52:
 color_list = ["red", "green", "blue", "yellow", "magenta", "cyan", "black", "white"]
 curses_ch_codes_color = {114: "red", 116: "green", 121: "blue", 117: "yellow",
                          105: "magenta", 111: "cyan", 112: "white", 91: "black"}
+block_list = [chr(9617), chr(9618), chr(9619), chr(9608), " "]
 
 
 def set_curses_colors() -> None:
@@ -29,7 +30,8 @@ def set_curses_colors() -> None:
     curses.init_pair(8, curses.COLOR_CYAN, curses.COLOR_CYAN)
 
 
-def static(screen, delay: float, color_mode: str, run_timer: int, scrn_saver_mode: bool):
+def static(screen, delay: float, color_mode: str, run_timer: int, scrn_saver_mode: bool,
+           test_mode: bool):
     """ Main curses window. """
     color_pair_dict = {"blue": [3, 3], "green": [4, 4], "magenta": [5, 5],
                        "yellow": [6, 6], "red": [7, 7], "cyan": [8, 8],
@@ -54,13 +56,18 @@ def static(screen, delay: float, color_mode: str, run_timer: int, scrn_saver_mod
             for x in range(size_x):
                 rand = randint(1, 20)
                 pair_num = choice(current_color_pair_list)
+                if test_mode:
+                    block = "0"
+                else:
+                    block = choice(block_list)
+                normal = curses.color_pair(pair_num)
+                bold = curses.color_pair(pair_num) + curses.A_BOLD
                 if rand <= 10:
                     pass  # black
                 elif rand <= 15:
-                    color_effect = curses.A_STANDOUT + curses.A_BOLD
-                    screen.addstr(y, x, " ", curses.color_pair(pair_num) + color_effect)
+                    screen.addstr(y, x, block, bold)
                 else:
-                    screen.addstr(y, x, "1", curses.color_pair(pair_num))
+                    screen.addstr(y, x, block, normal)
         screen.refresh()
 
         ch = screen.getch()
@@ -167,6 +174,7 @@ def argument_parsing(argv: list) -> argparse.Namespace:
                         help="List available colors and exit.")
     parser.add_argument("--list_commands", action="store_true",
                         help="List running commands.")
+    parser.add_argument("--test_mode", action="store_true", help=argparse.SUPPRESS)
     return parser.parse_args(argv)
 
 
@@ -190,7 +198,8 @@ def main() -> int:
     sleep(args.start_timer)
     delay_time = convert_delay_number_to_delay_time(args.delay)
     try:
-        curses.wrapper(static, delay_time, color_mode, args.run_timer, args.screen_saver)
+        curses.wrapper(static, delay_time, color_mode, args.run_timer, args.screen_saver,
+                       args.test_mode)
     except KeyboardInterrupt:
         pass
     return 0
