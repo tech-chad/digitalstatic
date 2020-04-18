@@ -30,8 +30,7 @@ def set_curses_colors() -> None:
     curses.init_pair(8, curses.COLOR_CYAN, curses.COLOR_CYAN)
 
 
-def static(screen, delay: float, color_mode: str, run_timer: int, scrn_saver_mode: bool,
-           test_mode: bool):
+def static(screen, color_mode: str, argv: argparse.Namespace):
     """ Main curses window. """
     color_pair_dict = {"blue": [3, 3], "green": [4, 4], "magenta": [5, 5],
                        "yellow": [6, 6], "red": [7, 7], "cyan": [8, 8],
@@ -39,12 +38,13 @@ def static(screen, delay: float, color_mode: str, run_timer: int, scrn_saver_mod
                        "color": [1, 2, 3, 4, 5, 6, 7, 8], "white": [2, 2]}
     set_curses_colors()
     current_color_pair_list = color_pair_dict[color_mode]
+    delay_time = convert_delay_number_to_delay_time(argv.delay)
 
     curses.curs_set(0)  # Set the cursor to off.
     screen.timeout(0)  # Turn blocking off for screen.getch().
 
     size_y, size_x = screen.getmaxyx()
-    end_time = datetime.datetime.now() + datetime.timedelta(seconds=run_timer)
+    end_time = datetime.datetime.now() + datetime.timedelta(seconds=argv.run_timer)
     while True:
         resize = curses.is_term_resized(size_y, size_x)
         if resize is True:
@@ -56,7 +56,7 @@ def static(screen, delay: float, color_mode: str, run_timer: int, scrn_saver_mod
             for x in range(size_x):
                 rand = randint(1, 20)
                 pair_num = choice(current_color_pair_list)
-                if test_mode:
+                if argv.test_mode:
                     block = "0"
                 else:
                     block = choice(block_list)
@@ -72,9 +72,9 @@ def static(screen, delay: float, color_mode: str, run_timer: int, scrn_saver_mod
 
         ch = screen.getch()
         # print(ch, file=open("debug.txt", "w"))  # not sure what used for ??
-        if run_timer and datetime.datetime.now() >= end_time:
+        if argv.run_timer and datetime.datetime.now() >= end_time:
             break
-        if scrn_saver_mode and ch != -1:
+        if argv.screen_saver and ch != -1:
             break
         elif ch != -1:
             if ch in [81, 113]:  # q, Q
@@ -88,8 +88,8 @@ def static(screen, delay: float, color_mode: str, run_timer: int, scrn_saver_mod
                 current_color_pair_list = color_pair_dict[color]
             elif ch in curses_number_ch_codes.keys():
                 number = curses_number_ch_codes[ch]
-                delay = convert_delay_number_to_delay_time(number)
-        sleep(delay)
+                delay_time = convert_delay_number_to_delay_time(number)
+        sleep(delay_time)
 
     # clear screen before returning
     screen.clear()
@@ -196,10 +196,8 @@ def main() -> int:
         color_mode = "color"
 
     sleep(args.start_timer)
-    delay_time = convert_delay_number_to_delay_time(args.delay)
     try:
-        curses.wrapper(static, delay_time, color_mode, args.run_timer, args.screen_saver,
-                       args.test_mode)
+        curses.wrapper(static, color_mode, args)
     except KeyboardInterrupt:
         pass
     return 0
