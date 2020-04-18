@@ -97,6 +97,10 @@ def static(screen, color_mode: str, argv: argparse.Namespace):
                 cycle_colors = False
             elif ch == 99:  # c
                 cycle_colors = True
+            elif ch == 100 or ch == 68:  # d, D
+                cycle_colors = False
+                current_color_pair_list = color_pair_dict["color"]
+                delay_time = convert_delay_number_to_delay_time(4)
             elif ch in curses_ch_codes_color.keys():
                 color = curses_ch_codes_color[ch]
                 current_color_pair_list = color_pair_dict[color]
@@ -161,6 +165,7 @@ def list_commands() -> None:
     print(" b       Enable black and white mode")
     print(" C       Enable color mode")
     print(" c       Enable cycle color mode")
+    print(" d       Reset to default settings")
     print(" 0 - 9   Delay. 0-Fast, 4-Default, 9-Slow")
     print(" r,t,y,u,i,o,p,[   Set single color")
 
