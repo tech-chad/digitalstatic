@@ -1,7 +1,7 @@
 
 import pytest
 
-import dstatic
+from dstatic import dstatic
 
 
 @pytest.mark.parametrize("test_values, expected_results", [

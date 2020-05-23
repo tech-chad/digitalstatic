@@ -1,14 +1,16 @@
 """ Test file for dstatic.py script. """
 
 from unittest import mock
+
 import pytest
 from hecate import Runner
-import dstatic
+
+from dstatic import dstatic
 
 
 def dstatic_cmd(*args):
     options = [a for a in args]
-    return ["python3", "dstatic.py"] + options
+    return ["python3", "dstatic/dstatic.py"] + options
 
 
 @pytest.mark.parametrize("test_values, expected_results", [
