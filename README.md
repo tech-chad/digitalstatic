@@ -2,7 +2,10 @@
 Digital Static / Snow with Python 3 and curses
 
 ### How to install
-to be added
+
+> pip install digital-static
+
+to run type ```dstatic```
 
 ### Commands
 - Q = to quit
