@@ -8,7 +8,12 @@ import sys
 from random import randint, choice
 from time import sleep
 
-version = "0.7.1"
+if sys.version_info >= (3, 8):
+    import importlib.metadata as importlib_metadata
+else:
+    import importlib_metadata
+
+version = importlib_metadata.version("digital_static")
 
 curses_number_ch_codes = {48: 0, 49: 1, 50: 2, 51: 3, 52:
                           4, 53: 5, 54: 6, 55: 7, 56: 8, 57: 9}
