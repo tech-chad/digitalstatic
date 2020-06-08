@@ -86,7 +86,6 @@ def static(screen, color_mode: str, argv: argparse.Namespace):
         screen.refresh()
 
         ch = screen.getch()
-        # print(ch, file=open("debug.txt", "w"))  # not sure what used for ??
         if argv.run_timer and datetime.datetime.now() >= end_time:
             break
         if argv.screen_saver and ch != -1:
