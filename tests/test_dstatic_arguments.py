@@ -23,23 +23,6 @@ def test_positive_int_zero_to_nine_error(test_values):
         dstatic.positive_int_zero_to_nine(test_values)
 
 
-@pytest.mark.parametrize("test_values, expected_results", [
-    ("1", 1), ("5", 5), ("10", 10), ("25", 25), ("99", 99), ("500", 500),
-    ("7865432549", 7865432549)
-])
-def test_positive_int_normal(test_values, expected_results):
-    result = dstatic.positive_int(test_values)
-    assert result == expected_results
-
-
-@pytest.mark.parametrize("test_values", [
-    "0", "-3", "3.5", "-3.5", "trash", "#$@#"
-])
-def test_positive_int_error(test_values):
-    with pytest.raises(dstatic.argparse.ArgumentTypeError):
-        dstatic.positive_int(test_values)
-
-
 @pytest.mark.parametrize("test_value", [
     "red", "green", "blue", "magenta", "yellow", "cyan", "black"
 ])

@@ -8,6 +8,8 @@ import sys
 from random import randint, choice
 from time import sleep
 
+import argparse_types
+
 if sys.version_info >= (3, 8):
     import importlib.metadata as importlib_metadata
 else:
@@ -140,21 +142,6 @@ def positive_int_zero_to_nine(value: str) -> int:
         raise argparse.ArgumentTypeError(f"{value} is an invalid positive int 0 to 9")
 
 
-def positive_int(value: str) -> int:
-    """
-    Used by argparse module.
-    Checks to see if the value is positive.
-    """
-    try:
-        int_value = int(value)
-    except ValueError:
-        raise argparse.ArgumentTypeError(f"{value} is an invalid positive int value")
-    else:
-        if int_value <= 0:
-            raise argparse.ArgumentTypeError(f"{value} is an invalid positive int value")
-    return int_value
-
-
 def color_type(value: str) -> str:
     """
     Used with argparse
@@ -192,9 +179,9 @@ def argument_parsing(argv: list) -> argparse.Namespace:
                         help="Enable black and white mode. Overrides -C")
     parser.add_argument("-C", dest="color", type=color_type, default=None,
                         metavar="COLOR", help="Set a single color to use")
-    parser.add_argument("-s", dest="start_timer", type=positive_int, default=0,
+    parser.add_argument("-s", dest="start_timer", type=argparse_types.pos_int, default=0,
                         help="Set a start timer in seconds", metavar="SECONDS")
-    parser.add_argument("-r", dest="run_timer", type=positive_int, default=0,
+    parser.add_argument("-r", dest="run_timer", type=argparse_types.pos_int, default=0,
                         metavar="SECONDS", help="Set a run timer in seconds")
     parser.add_argument("-S", dest="screen_saver", action="store_true",
                         help="Screen saver mode.  Any key will quit")
