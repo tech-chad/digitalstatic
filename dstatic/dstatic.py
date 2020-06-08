@@ -61,7 +61,7 @@ def static(screen, color_mode: str, argv: argparse.Namespace):
             screen.refresh()
 
         size_y, size_x = screen.getmaxyx()
-        for y in range(size_y - 1):
+        for y in range(size_y):
             for x in range(size_x):
                 rand = randint(1, 20)
                 if cycle_colors:
@@ -77,12 +77,15 @@ def static(screen, color_mode: str, argv: argparse.Namespace):
                     block = choice(block_list)
                 normal = curses.color_pair(randint(1, 8))
                 bold = curses.color_pair(randint(1, 8)) + curses.A_BOLD
-                if rand <= 10:
-                    pass  # black
-                elif rand <= 15:
-                    screen.addstr(y, x, block, bold)
-                else:
-                    screen.addstr(y, x, block, normal)
+                try:
+                    if rand <= 10:
+                        pass  # black
+                    elif rand <= 15:
+                        screen.addstr(y, x, block, bold)
+                    else:
+                        screen.addstr(y, x, block, normal)
+                except curses.error:
+                    pass
         screen.refresh()
 
         ch = screen.getch()
