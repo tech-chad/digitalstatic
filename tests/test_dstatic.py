@@ -22,9 +22,12 @@ def test_convert_delay_number_to_delay_time(test_values, expected_results):
     assert result == expected_results
 
 
-def test_set_curses_color_mock_call():
+@pytest.mark.parametrize("test_mode", [
+    "color", "bw", "black", "green", "red"
+])
+def test_set_curses_color_mock_call(test_mode):
     with mock.patch.object(dstatic.curses, "init_pair", return_value=None) as mock_init:
-        dstatic.set_curses_colors()
+        dstatic.set_curses_colors(test_mode)
         call_count = mock_init.call_count
         assert call_count == 8
 
@@ -32,9 +35,27 @@ def test_set_curses_color_mock_call():
 def test_set_curses_colors():
     dstatic.curses.initscr()
     dstatic.curses.start_color()
-    dstatic.set_curses_colors()
+    dstatic.set_curses_colors("cyan")
     result = dstatic.curses.pair_content(8)
     assert result == (dstatic.curses.COLOR_CYAN, dstatic.curses.COLOR_CYAN)
+    result = dstatic.curses.pair_content(1)
+    assert result == (dstatic.curses.COLOR_CYAN, dstatic.curses.COLOR_CYAN)
+    result = dstatic.curses.pair_content(5)
+    assert result == (dstatic.curses.COLOR_CYAN, dstatic.curses.COLOR_CYAN)
+
+
+def test_set_curses_colors_bw():
+    dstatic.curses.initscr()
+    dstatic.curses.start_color()
+    dstatic.set_curses_colors("bw")
+    result = dstatic.curses.pair_content(1)
+    assert result == (dstatic.curses.COLOR_BLACK, dstatic.curses.COLOR_BLACK)
+    result = dstatic.curses.pair_content(4)
+    assert result == (dstatic.curses.COLOR_BLACK, dstatic.curses.COLOR_BLACK)
+    result = dstatic.curses.pair_content(5)
+    assert result == (dstatic.curses.COLOR_WHITE, dstatic.curses.COLOR_WHITE)
+    result = dstatic.curses.pair_content(8)
+    assert result == (dstatic.curses.COLOR_WHITE, dstatic.curses.COLOR_WHITE)
 
 
 @pytest.mark.parametrize("test_key", ["q", "Q"])

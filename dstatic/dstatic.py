@@ -17,34 +17,36 @@ version = importlib_metadata.version("digital_static")
 
 curses_number_ch_codes = {48: 0, 49: 1, 50: 2, 51: 3, 52:
                           4, 53: 5, 54: 6, 55: 7, 56: 8, 57: 9}
-color_list = ["red", "green", "blue", "yellow", "magenta", "cyan", "black", "white"]
+color_list = ["red", "green", "white", "blue", "yellow", "magenta", "cyan", "black"]
 curses_ch_codes_color = {114: "red", 116: "green", 121: "blue", 117: "yellow",
                          105: "magenta", 111: "cyan", 112: "white", 91: "black"}
 block_list = [chr(9617), chr(9618), chr(9619), chr(9608), " "]
+CURSES_COLORS = {"black": curses.COLOR_BLACK, "white": curses.COLOR_WHITE,
+                 "blue": curses.COLOR_BLUE, "green": curses.COLOR_GREEN,
+                 "magenta": curses.COLOR_MAGENTA, "yellow": curses.COLOR_YELLOW,
+                 "red": curses.COLOR_RED, "cyan": curses.COLOR_CYAN}
 
 
-def set_curses_colors() -> None:
+def set_curses_colors(mode: str) -> None:
     """ Set curses colors. """
-    curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_BLACK)
-    curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_WHITE)
-    curses.init_pair(3, curses.COLOR_BLUE, curses.COLOR_BLUE)
-    curses.init_pair(4, curses.COLOR_GREEN, curses.COLOR_GREEN)
-    curses.init_pair(5, curses.COLOR_MAGENTA, curses.COLOR_MAGENTA)
-    curses.init_pair(6, curses.COLOR_YELLOW, curses.COLOR_YELLOW)
-    curses.init_pair(7, curses.COLOR_RED, curses.COLOR_RED)
-    curses.init_pair(8, curses.COLOR_CYAN, curses.COLOR_CYAN)
+    if mode == "color":
+        for i, color in enumerate(CURSES_COLORS.keys()):
+            curses.init_pair(i + 1, CURSES_COLORS[color], CURSES_COLORS[color])
+    elif mode == "bw":
+        for i in range(1, 5):
+            curses.init_pair(i, CURSES_COLORS["black"], CURSES_COLORS["black"])
+        for i in range(5, 9):
+            curses.init_pair(i, CURSES_COLORS["white"], CURSES_COLORS["white"])
+    else:
+        for i in range(1, 9):
+            curses.init_pair(i, CURSES_COLORS[mode], CURSES_COLORS[mode])
 
 
 def static(screen, color_mode: str, argv: argparse.Namespace):
     """ Main curses window. """
-    color_pair_dict = {"blue": [3, 3], "green": [4, 4], "magenta": [5, 5],
-                       "yellow": [6, 6], "red": [7, 7], "cyan": [8, 8],
-                       "bw": [1, 1, 2], "black": [1, 1],
-                       "color": [1, 2, 3, 4, 5, 6, 7, 8], "white": [2, 2]}
-    set_curses_colors()
-    current_color_pair_list = color_pair_dict[color_mode]
+    set_curses_colors(color_mode)
     delay_time = convert_delay_number_to_delay_time(argv.delay)
-    color_count = cycle_count = 1
+    color_count = cycle_count = 0
     cycle_colors = argv.cycle_colors
 
     curses.curs_set(0)  # Set the cursor to off.
@@ -63,20 +65,18 @@ def static(screen, color_mode: str, argv: argparse.Namespace):
             for x in range(size_x):
                 rand = randint(1, 20)
                 if cycle_colors:
-                    pair_num = color_count
-                    if cycle_count >= 200000:
-                        color_count = 1 if color_count == 8 else color_count + 1
+                    set_curses_colors(color_list[color_count])
+                    if cycle_count >= 40000:
+                        color_count = 0 if color_count == 7 else color_count + 1
                         cycle_count = 1
                     else:
                         cycle_count += 1
-                else:
-                    pair_num = choice(current_color_pair_list)
                 if argv.test_mode:
                     block = "0"
                 else:
                     block = choice(block_list)
-                normal = curses.color_pair(pair_num)
-                bold = curses.color_pair(pair_num) + curses.A_BOLD
+                normal = curses.color_pair(randint(1, 8))
+                bold = curses.color_pair(randint(1, 8)) + curses.A_BOLD
                 if rand <= 10:
                     pass  # black
                 elif rand <= 15:
@@ -95,20 +95,21 @@ def static(screen, color_mode: str, argv: argparse.Namespace):
             if ch in [81, 113]:  # q, Q
                 break
             elif ch == 98:  # b
-                current_color_pair_list = color_pair_dict["bw"]
+                set_curses_colors("bw")
                 cycle_colors = False
             elif ch == 67:  # C
-                current_color_pair_list = color_pair_dict["color"]
+                set_curses_colors("color")
                 cycle_colors = False
             elif ch == 99:  # c
                 cycle_colors = True
             elif ch == 100 or ch == 68:  # d, D
                 cycle_colors = False
-                current_color_pair_list = color_pair_dict["color"]
+                set_curses_colors("color")
                 delay_time = convert_delay_number_to_delay_time(4)
             elif ch in curses_ch_codes_color.keys():
                 color = curses_ch_codes_color[ch]
-                current_color_pair_list = color_pair_dict[color]
+                set_curses_colors(color)
+                cycle_colors = False
             elif ch in curses_number_ch_codes.keys():
                 number = curses_number_ch_codes[ch]
                 delay_time = convert_delay_number_to_delay_time(number)
