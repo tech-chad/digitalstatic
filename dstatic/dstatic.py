@@ -66,7 +66,7 @@ def static(screen, color_mode: str, argv: argparse.Namespace):
                 rand = randint(1, 20)
                 if cycle_colors:
                     set_curses_colors(color_list[color_count])
-                    if cycle_count >= 40000:
+                    if cycle_count >= 300000:
                         color_count = 0 if color_count == 7 else color_count + 1
                         cycle_count = 1
                     else:
