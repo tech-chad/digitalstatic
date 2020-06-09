@@ -17,8 +17,9 @@ else:
 
 version = importlib_metadata.version("digital_static")
 
-curses_number_ch_codes = {48: 0, 49: 1, 50: 2, 51: 3, 52:
-                          4, 53: 5, 54: 6, 55: 7, 56: 8, 57: 9}
+curses_number_ch_codes = {48: 0, 49: 1, 50: 2, 51: 3, 52: 4, 53: 5, 54: 6, 55:
+                          7, 56: 8, 57: 9}
+curses_shift_num_codes = {33: 1, 64: 2, 35: 3, 36: 4, 37: 5}
 color_list = ["red", "green", "white", "blue", "yellow", "magenta", "cyan", "black"]
 curses_ch_codes_color = {114: "red", 116: "green", 121: "blue", 117: "yellow",
                          105: "magenta", 111: "cyan", 112: "white", 91: "black"}
@@ -50,6 +51,7 @@ def static(screen, color_mode: str, argv: argparse.Namespace):
     delay_time = convert_delay_number_to_delay_time(argv.delay)
     color_count = cycle_count = 0
     cycle_colors = argv.cycle_colors
+    cycle_delay = 1
 
     curses.curs_set(0)  # Set the cursor to off.
     screen.timeout(0)  # Turn blocking off for screen.getch().
@@ -68,7 +70,7 @@ def static(screen, color_mode: str, argv: argparse.Namespace):
                 rand = randint(1, 20)
                 if cycle_colors:
                     set_curses_colors(color_list[color_count])
-                    if cycle_count >= 300000:
+                    if cycle_count >= 100000 * (cycle_delay * 5 - 4):
                         color_count = 0 if color_count == 7 else color_count + 1
                         cycle_count = 1
                     else:
@@ -117,9 +119,11 @@ def static(screen, color_mode: str, argv: argparse.Namespace):
             elif ch in curses_number_ch_codes.keys():
                 number = curses_number_ch_codes[ch]
                 delay_time = convert_delay_number_to_delay_time(number)
+            elif ch in curses_shift_num_codes.keys():
+                cycle_delay = curses_shift_num_codes[ch]
         sleep(delay_time)
 
-    # clear screen before returning
+    # clear screen before returning%
     screen.clear()
     screen.refresh()
 
@@ -162,6 +166,7 @@ def list_commands() -> None:
     print(" c       Enable cycle color mode")
     print(" d       Reset to default settings")
     print(" 0 - 9   Delay. 0-Fast, 4-Default, 9-Slow")
+    print("shift 1 - 5 Color cycle delay time. 1-Fast, 3-Default, 5-Slow")
     print(" r,t,y,u,i,o,p,[   Set single color")
 
 

@@ -14,6 +14,7 @@ Digital Static / Snow with Python 3 and curses
 - <kbd>c</kbd> = cycle color mode
 - <kbd>d</kbd> = reset to default
 - <kbd>0 to 9</kbd> = Delay
+- <kbd>shift 1 to 5</kbd> = cycle color delay
 
 #### Colors
 - <kbd>r</kbd> = red
