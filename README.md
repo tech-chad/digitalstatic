@@ -17,6 +17,7 @@ Digital Static / Snow with Python 3 and curses
 - <kbd>shift 1 to 5</kbd> = cycle color delay
 
 #### Colors
+Change colors while running
 - <kbd>r</kbd> = red
 - <kbd>t</kbd> = green
 - <kbd>y</kbd> = blue
