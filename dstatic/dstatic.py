@@ -51,7 +51,7 @@ def static(screen, color_mode: str, argv: argparse.Namespace):
     delay_time = convert_delay_number_to_delay_time(argv.delay)
     color_count = cycle_count = 0
     cycle_colors = argv.cycle_colors
-    cycle_delay = 1
+    cycle_delay = 3
 
     curses.curs_set(0)  # Set the cursor to off.
     screen.timeout(0)  # Turn blocking off for screen.getch().
