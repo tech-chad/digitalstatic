@@ -63,35 +63,34 @@ def static(screen, color_mode: str, argv: argparse.Namespace):
         if resize is True:
             screen.clear()
             screen.refresh()
+        if cycle_colors:
+            set_curses_colors(color_list[color_count])
 
         size_y, size_x = screen.getmaxyx()
         for y in range(size_y):
             for x in range(size_x):
                 rand = randint(1, 20)
-                if cycle_colors:
-                    set_curses_colors(color_list[color_count])
-                    if cycle_count >= 100000 * (cycle_delay * 5 - 4):
-                        color_count = 0 if color_count == 7 else color_count + 1
-                        cycle_count = 1
-                    else:
-                        cycle_count += 1
                 if argv.test_mode:
                     block = "0"
                 else:
                     block = choice(block_list)
-                normal = curses.color_pair(randint(1, 8))
-                bold = curses.color_pair(randint(1, 8)) + curses.A_BOLD
                 try:
                     if rand <= 10:
                         pass  # black
                     elif rand <= 15:
+                        bold = curses.color_pair(randint(1, 8)) + curses.A_BOLD
                         screen.addstr(y, x, block, bold)
                     else:
+                        normal = curses.color_pair(randint(1, 8))
                         screen.addstr(y, x, block, normal)
                 except curses.error:
                     pass
         screen.refresh()
-
+        if cycle_count >= 10 * (cycle_delay * 5 - 4):
+            color_count = 0 if color_count == 7 else color_count + 1
+            cycle_count = 1
+        else:
+            cycle_count += 1
         ch = screen.getch()
         if argv.run_timer and datetime.datetime.now() >= end_time:
             break
@@ -123,7 +122,7 @@ def static(screen, color_mode: str, argv: argparse.Namespace):
                 cycle_delay = curses_shift_num_codes[ch]
         sleep(delay_time)
 
-    # clear screen before returning%
+    # clear screen before returning
     screen.clear()
     screen.refresh()
 
