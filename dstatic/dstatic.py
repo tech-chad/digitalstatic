@@ -196,6 +196,7 @@ def argument_parsing(argv: list) -> argparse.Namespace:
                         help="List available colors and exit.")
     parser.add_argument("--list_commands", action="store_true",
                         help="List running commands.")
+    parser.add_argument("--version", action="version", version=version)
     parser.add_argument("--test_mode", action="store_true", help=argparse.SUPPRESS)
     return parser.parse_args(argv)
 

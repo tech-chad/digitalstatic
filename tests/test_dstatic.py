@@ -240,3 +240,8 @@ def test_dstatic_list_commands():
 def test_dstatic_list_colors():
     with Runner(*dstatic_cmd("--list_colors")) as h:
         h.await_text("Color List:")
+
+
+def test_dstatic_display_version():
+    with Runner(*dstatic_cmd("--version")) as h:
+        h.await_text(f"{dstatic.version}")
