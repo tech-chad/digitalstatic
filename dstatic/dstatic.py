@@ -9,20 +9,21 @@ from random import randint
 from random import choice
 from time import sleep
 
-import argparse_types
+from typing import Optional
+from typing import Sequence
+
+import argparse_types  # type: ignore
 
 if sys.version_info >= (3, 8):
     import importlib.metadata as importlib_metadata
 else:
-    import importlib_metadata
+    import importlib_metadata  # type: ignore
 
 version = importlib_metadata.version("digital_static")
 
 curses_number_ch_codes = {48: 0, 49: 1, 50: 2, 51: 3, 52: 4, 53: 5, 54: 6, 55:
                           7, 56: 8, 57: 9}
 curses_shift_num_codes = {33: 1, 64: 2, 35: 3, 36: 4, 37: 5}
-color_list = ["red", "green", "white", "blue", "yellow",
-              "magenta", "cyan", "black"]
 curses_ch_codes_color = {114: "red", 116: "green", 121: "blue", 117: "yellow",
                          105: "magenta", 111: "cyan", 112: "white", 91: "black"}
 block_list = [chr(9617), chr(9618), chr(9619), chr(9608), " "]
@@ -47,12 +48,12 @@ def set_curses_colors(mode: str) -> None:
             curses.init_pair(i, CURSES_COLORS[mode], CURSES_COLORS[mode])
 
 
-def static(screen, color_mode: str, argv: argparse.Namespace):
+def static(screen, color_mode: str, args: argparse.Namespace):
     """ Main curses window. """
     set_curses_colors(color_mode)
-    delay_time = convert_delay_number_to_delay_time(argv.delay)
+    delay_time = convert_delay_number_to_delay_time(args.delay)
     color_count = cycle_count = 0
-    cycle_colors = argv.cycle_colors
+    cycle_colors = args.cycle_colors
     cycle_delay = 3
 
     curses.curs_set(0)  # Set the cursor to off.
@@ -60,23 +61,21 @@ def static(screen, color_mode: str, argv: argparse.Namespace):
 
     size_y, size_x = screen.getmaxyx()
     start_time = datetime.datetime.now()
-    end_time = start_time + datetime.timedelta(seconds=argv.run_timer)
+    end_time = start_time + datetime.timedelta(seconds=args.run_timer)
     while True:
         resize = curses.is_term_resized(size_y, size_x)
         if resize is True:
             screen.clear()
             screen.refresh()
         if cycle_colors:
-            set_curses_colors(color_list[color_count])
+            color_num = list(CURSES_COLORS.keys())
+            set_curses_colors(color_num[color_count])
 
         size_y, size_x = screen.getmaxyx()
         for y in range(size_y):
             for x in range(size_x):
                 rand = randint(1, 20)
-                if argv.test_mode:
-                    block = "0"
-                else:
-                    block = choice(block_list)
+                block = 0 if args.test_mode else choice(block_list)
                 try:
                     if rand <= 10:
                         pass  # black
@@ -86,7 +85,7 @@ def static(screen, color_mode: str, argv: argparse.Namespace):
                     else:
                         normal = curses.color_pair(randint(1, 8))
                         screen.addstr(y, x, block, normal)
-                except curses.error:
+                except curses.error:  # catching last block written off screen
                     pass
         screen.refresh()
         if cycle_count >= 10 * (cycle_delay * 5 - 4):
@@ -95,9 +94,9 @@ def static(screen, color_mode: str, argv: argparse.Namespace):
         else:
             cycle_count += 1
         ch = screen.getch()
-        if argv.run_timer and datetime.datetime.now() >= end_time:
+        if args.run_timer and datetime.datetime.now() >= end_time:
             break
-        if argv.screen_saver and ch != -1:
+        if args.screen_saver and ch != -1:
             break
         elif ch != -1:
             if ch in [81, 113]:  # q, Q
@@ -131,6 +130,7 @@ def static(screen, color_mode: str, argv: argparse.Namespace):
 
 
 def convert_delay_number_to_delay_time(delay_num: int) -> float:
+    """ Converts delay number into delay time for sleep function. """
     return round((delay_num / 100) * (0.5 + delay_num/2), 2)
 
 
@@ -156,7 +156,7 @@ def color_type(value: str) -> str:
     the lower case color name.
     """
     lower_value = value.lower()
-    if lower_value in color_list:
+    if lower_value in CURSES_COLORS.keys():
         return lower_value
     raise argparse.ArgumentTypeError(f"{value} is an invalid color name")
 
@@ -175,10 +175,10 @@ def list_commands() -> None:
 
 def list_colors() -> None:
     print("Color List:")
-    print(", ".join(color_list))
+    print(", ".join(CURSES_COLORS.keys()))
 
 
-def argument_parsing(argv: list) -> argparse.Namespace:
+def argument_parser(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     """ Command line argument setup and parsing by argparse. """
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", dest="delay", default=4,
@@ -211,7 +211,7 @@ def argument_parsing(argv: list) -> argparse.Namespace:
 
 def main() -> int:
     """ Main function. """
-    args = argument_parsing(sys.argv[1:])
+    args = argument_parser()
     if args.list_commands:
         list_commands()
         return 0
@@ -235,4 +235,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    main()
+    exit(main())
