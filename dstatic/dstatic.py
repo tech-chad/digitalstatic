@@ -4,6 +4,7 @@
 import argparse
 import curses
 import datetime
+import os
 import sys
 from random import randint
 from random import choice
@@ -26,11 +27,14 @@ curses_number_ch_codes = {48: 0, 49: 1, 50: 2, 51: 3, 52: 4, 53: 5, 54: 6, 55:
 curses_shift_num_codes = {33: 1, 64: 2, 35: 3, 36: 4, 37: 5}
 curses_ch_codes_color = {114: "red", 116: "green", 121: "blue", 117: "yellow",
                          105: "magenta", 111: "cyan", 112: "white", 91: "black"}
-block_list = [chr(9617), chr(9618), chr(9619), chr(9608), " "]
 CURSES_COLORS = {"black": curses.COLOR_BLACK, "white": curses.COLOR_WHITE,
                  "blue": curses.COLOR_BLUE, "green": curses.COLOR_GREEN,
                  "magenta": curses.COLOR_MAGENTA, "yellow": curses.COLOR_YELLOW,
                  "red": curses.COLOR_RED, "cyan": curses.COLOR_CYAN}
+if os.environ.get("TERM") == "linux":
+    block_list = [" "]
+else:
+    block_list = [chr(9617), chr(9618), chr(9619), chr(9608), " "]
 
 
 def set_curses_colors(mode: str) -> None:
