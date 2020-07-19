@@ -63,15 +63,14 @@ def static(screen, color_mode: str, args: argparse.Namespace):
     start_time = datetime.datetime.now()
     end_time = start_time + datetime.timedelta(seconds=args.run_timer)
     while True:
-        resize = curses.is_term_resized(size_y, size_x)
-        if resize is True:
+        if curses.is_term_resized(size_y, size_x):
+            size_y, size_x = screen.getmaxyx()
             screen.clear()
             screen.refresh()
         if cycle_colors:
             color_num = list(CURSES_COLORS.keys())
             set_curses_colors(color_num[color_count])
 
-        size_y, size_x = screen.getmaxyx()
         for y in range(size_y):
             for x in range(size_x):
                 rand = randint(1, 20)
@@ -98,30 +97,29 @@ def static(screen, color_mode: str, args: argparse.Namespace):
             break
         if args.screen_saver and ch != -1:
             break
-        elif ch != -1:
-            if ch in [81, 113]:  # q, Q
-                break
-            elif ch == 98:  # b
-                set_curses_colors("bw")
-                cycle_colors = False
-            elif ch == 67:  # C
-                set_curses_colors("color")
-                cycle_colors = False
-            elif ch == 99:  # c
-                cycle_colors = True
-            elif ch == 100 or ch == 68:  # d, D
-                cycle_colors = False
-                set_curses_colors("color")
-                delay_time = convert_delay_number_to_delay_time(4)
-            elif ch in curses_ch_codes_color.keys():
-                color = curses_ch_codes_color[ch]
-                set_curses_colors(color)
-                cycle_colors = False
-            elif ch in curses_number_ch_codes.keys():
-                number = curses_number_ch_codes[ch]
-                delay_time = convert_delay_number_to_delay_time(number)
-            elif ch in curses_shift_num_codes.keys():
-                cycle_delay = curses_shift_num_codes[ch]
+        elif ch in [81, 113]:  # q, Q
+            break
+        elif ch == 98:  # b
+            set_curses_colors("bw")
+            cycle_colors = False
+        elif ch == 67:  # C
+            set_curses_colors("color")
+            cycle_colors = False
+        elif ch == 99:  # c
+            cycle_colors = True
+        elif ch == 100 or ch == 68:  # d, D
+            cycle_colors = False
+            set_curses_colors("color")
+            delay_time = convert_delay_number_to_delay_time(4)
+        elif ch in curses_ch_codes_color.keys():
+            color = curses_ch_codes_color[ch]
+            set_curses_colors(color)
+            cycle_colors = False
+        elif ch in curses_number_ch_codes.keys():
+            number = curses_number_ch_codes[ch]
+            delay_time = convert_delay_number_to_delay_time(number)
+        elif ch in curses_shift_num_codes.keys():
+            cycle_delay = curses_shift_num_codes[ch]
         sleep(delay_time)
 
     # clear screen before returning
