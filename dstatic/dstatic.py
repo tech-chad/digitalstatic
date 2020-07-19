@@ -5,7 +5,8 @@ import argparse
 import curses
 import datetime
 import sys
-from random import randint, choice
+from random import randint
+from random import choice
 from time import sleep
 
 import argparse_types
@@ -20,7 +21,8 @@ version = importlib_metadata.version("digital_static")
 curses_number_ch_codes = {48: 0, 49: 1, 50: 2, 51: 3, 52: 4, 53: 5, 54: 6, 55:
                           7, 56: 8, 57: 9}
 curses_shift_num_codes = {33: 1, 64: 2, 35: 3, 36: 4, 37: 5}
-color_list = ["red", "green", "white", "blue", "yellow", "magenta", "cyan", "black"]
+color_list = ["red", "green", "white", "blue", "yellow",
+              "magenta", "cyan", "black"]
 curses_ch_codes_color = {114: "red", 116: "green", 121: "blue", 117: "yellow",
                          105: "magenta", 111: "cyan", 112: "white", 91: "black"}
 block_list = [chr(9617), chr(9618), chr(9619), chr(9608), " "]
@@ -57,7 +59,8 @@ def static(screen, color_mode: str, argv: argparse.Namespace):
     screen.timeout(0)  # Turn blocking off for screen.getch().
 
     size_y, size_x = screen.getmaxyx()
-    end_time = datetime.datetime.now() + datetime.timedelta(seconds=argv.run_timer)
+    start_time = datetime.datetime.now()
+    end_time = start_time + datetime.timedelta(seconds=argv.run_timer)
     while True:
         resize = curses.is_term_resized(size_y, size_x)
         if resize is True:
@@ -136,13 +139,14 @@ def positive_int_zero_to_nine(value: str) -> int:
     Used with argparse module.
     Checks to see if value is positive int between 0 and 10.
     """
+    msg = f"{value} is an invalid positive int 0 to 9"
     try:
         int_value = int(value)
         if int_value < 0 or int_value >= 10:
-            raise argparse.ArgumentTypeError(f"{value} is an invalid positive int 0 to 9")
+            raise argparse.ArgumentTypeError(msg)
         return int_value
     except ValueError:
-        raise argparse.ArgumentTypeError(f"{value} is an invalid positive int 0 to 9")
+        raise argparse.ArgumentTypeError(msg)
 
 
 def color_type(value: str) -> str:
@@ -177,15 +181,19 @@ def list_colors() -> None:
 def argument_parsing(argv: list) -> argparse.Namespace:
     """ Command line argument setup and parsing by argparse. """
     parser = argparse.ArgumentParser()
-    parser.add_argument("-d", dest="delay", default=4, type=positive_int_zero_to_nine,
-                        help="Delay setting (speed):  0 - Fast, 4 - Default, 9 - Slow")
+    parser.add_argument("-d", dest="delay", default=4,
+                        type=positive_int_zero_to_nine,
+                        help="Delay setting (speed):  "
+                             "0 - Fast, 4 - Default, 9 - Slow")
     parser.add_argument("-b", dest="black_white", action="store_true",
                         help="Enable black and white mode. Overrides -C")
     parser.add_argument("-C", dest="color", type=color_type, default=None,
                         metavar="COLOR", help="Set a single color to use")
-    parser.add_argument("-s", dest="start_timer", type=argparse_types.pos_int, default=0,
+    parser.add_argument("-s", dest="start_timer",
+                        type=argparse_types.pos_int, default=0,
                         help="Set a start timer in seconds", metavar="SECONDS")
-    parser.add_argument("-r", dest="run_timer", type=argparse_types.pos_int, default=0,
+    parser.add_argument("-r", dest="run_timer",
+                        type=argparse_types.pos_int, default=0,
                         metavar="SECONDS", help="Set a run timer in seconds")
     parser.add_argument("-S", dest="screen_saver", action="store_true",
                         help="Screen saver mode.  Any key will quit")
@@ -196,7 +204,8 @@ def argument_parsing(argv: list) -> argparse.Namespace:
     parser.add_argument("--list_commands", action="store_true",
                         help="List running commands.")
     parser.add_argument("--version", action="version", version=version)
-    parser.add_argument("--test_mode", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument("--test_mode", action="store_true",
+                        help=argparse.SUPPRESS)
     return parser.parse_args(argv)
 
 

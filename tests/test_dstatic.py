@@ -26,7 +26,9 @@ def test_convert_delay_number_to_delay_time(test_values, expected_results):
     "color", "bw", "black", "green", "red"
 ])
 def test_set_curses_color_mock_call(test_mode):
-    with mock.patch.object(dstatic.curses, "init_pair", return_value=None) as mock_init:
+    with mock.patch.object(dstatic.curses,
+                           "init_pair",
+                           return_value=None) as mock_init:
         dstatic.set_curses_colors(test_mode)
         call_count = mock_init.call_count
         assert call_count == 8
@@ -205,7 +207,8 @@ def test_color_command():
         h.await_exit()
 
 
-@pytest.mark.parametrize("test_value", ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'])
+@pytest.mark.parametrize("test_value", ['0', '1', '2', '3', '4',
+                                        '5', '6', '7', '8', '9'])
 def test_delay_change(test_value):
     with Runner(*dstatic_cmd("--test_mode")) as h:
         h.default_timeout = 2
