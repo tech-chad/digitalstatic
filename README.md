@@ -28,8 +28,9 @@ Change colors while running
 - <kbd>[</kbd> = black
 
 ### Screen Shots
-![screen1.png](img/screen1.png)
+![screen1](https://i.fluffy.cc/PzDwTN3sZC6fbbnKL4SMSDQFwr1P1mTr.png)
 
-![screen3.png](img/screen3.png)
+![screen2](https://i.fluffy.cc/p38RJxwTn7rRCHKkFrxPKzM9CTK84MgP.png)
 
-![screen2.png](img/screen2.png)
+![screen3](https://i.fluffy.cc/sLz0sqC8pFdf27twrh6z4BJ27StlG7jc.png)
+
