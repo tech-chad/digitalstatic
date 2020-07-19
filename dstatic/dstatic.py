@@ -75,7 +75,7 @@ def static(screen, color_mode: str, args: argparse.Namespace):
         for y in range(size_y):
             for x in range(size_x):
                 rand = randint(1, 20)
-                block = 0 if args.test_mode else choice(block_list)
+                block = "0" if args.test_mode else choice(block_list)
                 try:
                     if rand <= 10:
                         pass  # black

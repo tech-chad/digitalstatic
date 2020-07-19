@@ -46,7 +46,7 @@ def test_color_type_error(test_values):
 ])
 def test_parser_arguments_delay(test_values, expected_results):
     """ Testing a single argument -d (delay option). """
-    result = dstatic.argument_parsing(test_values)
+    result = dstatic.argument_parser(test_values)
     assert result.delay == expected_results
 
 
@@ -55,7 +55,7 @@ def test_parser_arguments_delay(test_values, expected_results):
 ])
 def test_parser_arguments_black_white(test_values,expected_results):
     """ Testing single argument -b (black & white mode). """
-    result = dstatic.argument_parsing(test_values)
+    result = dstatic.argument_parser(test_values)
     assert result.black_white == expected_results
 
 
@@ -64,7 +64,7 @@ def test_parser_arguments_black_white(test_values,expected_results):
 ])
 def test_argument_parsing_start(test_values, expected_results):
     """ Testing single argument -s SECONDS (start timer option). """
-    result = dstatic.argument_parsing(test_values)
+    result = dstatic.argument_parser(test_values)
     assert result.start_timer == expected_results
 
 
@@ -73,7 +73,7 @@ def test_argument_parsing_start(test_values, expected_results):
 ])
 def test_argument_parsing_run(test_values, expected_results):
     """ Testing single argument -r SECONDS (run timer option). """
-    result = dstatic.argument_parsing(test_values)
+    result = dstatic.argument_parser(test_values)
     assert result.run_timer == expected_results
 
 
@@ -81,7 +81,7 @@ def test_argument_parsing_run(test_values, expected_results):
     ([], False), (["-S"], True)
 ])
 def test_argument_parsing_screen_saver(test_values, expected_results):
-    result = dstatic.argument_parsing(test_values)
+    result = dstatic.argument_parser(test_values)
     assert result.screen_saver == expected_results
 
 
@@ -89,7 +89,7 @@ def test_argument_parsing_screen_saver(test_values, expected_results):
     ([], False), (["--list_commands"], True)
 ])
 def test_argument_parsing_list_commands(test_values, expected_results):
-    result = dstatic.argument_parsing(test_values)
+    result = dstatic.argument_parser(test_values)
     assert result.list_commands == expected_results
 
 
@@ -97,7 +97,7 @@ def test_argument_parsing_list_commands(test_values, expected_results):
     ([], None), (["-C", "red"], "red"), (["-C", "yellow"], "yellow")
 ])
 def test_argument_parsing_color(test_values, expected_results):
-    result = dstatic.argument_parsing(test_values)
+    result = dstatic.argument_parser(test_values)
     assert result.color == expected_results
 
 
@@ -105,7 +105,7 @@ def test_argument_parsing_color(test_values, expected_results):
     ([], False), (["--list_colors"], True)
 ])
 def test_argument_parsing_list_commands(test_values, expected_results):
-    result = dstatic.argument_parsing(test_values)
+    result = dstatic.argument_parser(test_values)
     assert result.list_colors == expected_results
 
 
@@ -113,7 +113,7 @@ def test_argument_parsing_list_commands(test_values, expected_results):
     ([], False), (["--test_mode"], True)
 ])
 def test_argument_parsing_test_mode(test_values, expected_results):
-    result = dstatic.argument_parsing(test_values)
+    result = dstatic.argument_parser(test_values)
     assert result.test_mode is expected_results
 
 
@@ -121,5 +121,5 @@ def test_argument_parsing_test_mode(test_values, expected_results):
     ([], False), (["-c"], True)
 ])
 def test_argument_parsing_cycle_colors(test_values, expected_results):
-    result = dstatic.argument_parsing(test_values)
+    result = dstatic.argument_parser(test_values)
     assert result.cycle_colors is expected_results
