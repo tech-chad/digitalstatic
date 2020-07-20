@@ -10,6 +10,7 @@ from random import randint
 from random import choice
 from time import sleep
 
+from typing import List
 from typing import Optional
 from typing import Sequence
 
@@ -37,7 +38,7 @@ else:
     block_list = [chr(9617), chr(9618), chr(9619), chr(9608), " "]
 
 
-def set_curses_colors(mode: str) -> None:
+def set_curses_colors(mode: str, additive_colors: List[str]) -> None:
     """ Set curses colors. """
     if mode == "color":
         for i, color in enumerate(CURSES_COLORS.keys()):
@@ -47,6 +48,84 @@ def set_curses_colors(mode: str) -> None:
             curses.init_pair(i, CURSES_COLORS["black"], CURSES_COLORS["black"])
         for i in range(5, 9):
             curses.init_pair(i, CURSES_COLORS["white"], CURSES_COLORS["white"])
+    elif mode == "additive":
+        if len(additive_colors) == 1:
+            for i in range(1, 9):
+                curses.init_pair(i, CURSES_COLORS[additive_colors[0]],
+                                 CURSES_COLORS[additive_colors[0]])
+        elif len(additive_colors) == 2:
+            for i in range(1, 5):
+                curses.init_pair(i, CURSES_COLORS[additive_colors[0]],
+                                 CURSES_COLORS[additive_colors[0]])
+            for i in range(5, 9):
+                curses.init_pair(i, CURSES_COLORS[additive_colors[1]],
+                                 CURSES_COLORS[additive_colors[1]])
+        elif len(additive_colors) == 3:
+            for i in range(1, 4):
+                curses.init_pair(i, CURSES_COLORS[additive_colors[0]],
+                                 CURSES_COLORS[additive_colors[0]])
+            for i in range(4, 7):
+                curses.init_pair(i, CURSES_COLORS[additive_colors[1]],
+                                 CURSES_COLORS[additive_colors[1]])
+            for i in range(7, 9):
+                curses.init_pair(i, CURSES_COLORS[additive_colors[2]],
+                                 CURSES_COLORS[additive_colors[2]])
+        elif len(additive_colors) == 4:
+            for i in range(1, 3):
+                curses.init_pair(i, CURSES_COLORS[additive_colors[0]],
+                                 CURSES_COLORS[additive_colors[0]])
+            for i in range(3, 5):
+                curses.init_pair(i, CURSES_COLORS[additive_colors[1]],
+                                 CURSES_COLORS[additive_colors[1]])
+            for i in range(5, 7):
+                curses.init_pair(i, CURSES_COLORS[additive_colors[2]],
+                                 CURSES_COLORS[additive_colors[2]])
+            for i in range(7, 9):
+                curses.init_pair(i, CURSES_COLORS[additive_colors[3]],
+                                 CURSES_COLORS[additive_colors[3]])
+        elif len(additive_colors) == 5:
+            curses.init_pair(1, CURSES_COLORS[additive_colors[0]],
+                             CURSES_COLORS[additive_colors[0]])
+            for i in range(2, 4):
+                curses.init_pair(i, CURSES_COLORS[additive_colors[1]],
+                                 CURSES_COLORS[additive_colors[1]])
+            for i in range(4, 6):
+                curses.init_pair(i, CURSES_COLORS[additive_colors[2]],
+                                 CURSES_COLORS[additive_colors[2]])
+            for i in range(6, 8):
+                curses.init_pair(i, CURSES_COLORS[additive_colors[3]],
+                                 CURSES_COLORS[additive_colors[3]])
+            curses.init_pair(8, CURSES_COLORS[additive_colors[4]],
+                             CURSES_COLORS[additive_colors[4]])
+        elif len(additive_colors) == 6:
+            for i, color in enumerate(additive_colors[0:2]):
+                curses.init_pair(i + 1, CURSES_COLORS[color],
+                                 CURSES_COLORS[color])
+            for i in range(3, 5):
+                curses.init_pair(i, CURSES_COLORS[additive_colors[2]],
+                                 CURSES_COLORS[additive_colors[2]])
+            for i in range(5, 6):
+                curses.init_pair(i, CURSES_COLORS[additive_colors[3]],
+                                 CURSES_COLORS[additive_colors[3]])
+            for i in range(6, 8):
+                curses.init_pair(i, CURSES_COLORS[additive_colors[4]],
+                                 CURSES_COLORS[additive_colors[4]])
+            curses.init_pair(8, CURSES_COLORS[additive_colors[5]],
+                             CURSES_COLORS[additive_colors[5]])
+        elif len(additive_colors) == 7:
+            for i, color in enumerate(additive_colors[0:2]):
+                curses.init_pair(i + 1, CURSES_COLORS[color],
+                                 CURSES_COLORS[color])
+            for i in range(3, 5):
+                curses.init_pair(i, CURSES_COLORS[additive_colors[2]],
+                                 CURSES_COLORS[additive_colors[2]])
+            for i, color in enumerate(additive_colors[3:], start=5):
+                curses.init_pair(i, CURSES_COLORS[color],
+                                 CURSES_COLORS[color])
+        elif len(additive_colors) == 8:
+            for i, color in enumerate(additive_colors):
+                curses.init_pair(i + 1, CURSES_COLORS[color],
+                                 CURSES_COLORS[color])
     else:
         for i in range(1, 9):
             curses.init_pair(i, CURSES_COLORS[mode], CURSES_COLORS[mode])
@@ -54,11 +133,18 @@ def set_curses_colors(mode: str) -> None:
 
 def static(screen, color_mode: str, args: argparse.Namespace):
     """ Main curses window. """
-    set_curses_colors(color_mode)
+    set_curses_colors(color_mode, [])
     delay_time = convert_delay_number_to_delay_time(args.delay)
     color_count = cycle_count = 0
     cycle_colors = args.cycle_colors
     cycle_delay = 3
+    if args.additive:
+        additive_colors = ["black"]
+        set_curses_colors("additive", additive_colors)
+        additive_mode = True
+    else:
+        additive_mode = False
+        additive_colors = []
 
     curses.curs_set(0)  # Set the cursor to off.
     screen.timeout(0)  # Turn blocking off for screen.getch().
@@ -73,7 +159,7 @@ def static(screen, color_mode: str, args: argparse.Namespace):
             screen.refresh()
         if cycle_colors:
             color_num = list(CURSES_COLORS.keys())
-            set_curses_colors(color_num[color_count])
+            set_curses_colors(color_num[color_count], [])
 
         for y in range(size_y):
             for x in range(size_x):
@@ -104,20 +190,40 @@ def static(screen, color_mode: str, args: argparse.Namespace):
         elif ch in [81, 113]:  # q, Q
             break
         elif ch == 98:  # b
-            set_curses_colors("bw")
+            set_curses_colors("bw", [])
             cycle_colors = False
+            additive_mode = False
         elif ch == 67:  # C
-            set_curses_colors("color")
+            set_curses_colors("color", [])
             cycle_colors = False
+            additive_mode = False
         elif ch == 99:  # c
             cycle_colors = True
+            additive_mode = False
         elif ch == 100 or ch == 68:  # d, D
             cycle_colors = False
-            set_curses_colors("color")
+            set_curses_colors("color", [])
             delay_time = convert_delay_number_to_delay_time(4)
+            additive_mode = False
+        elif ch == 97:  # a
+            if additive_mode:
+                additive_mode = False
+                set_curses_colors("color", [])
+            else:
+                cycle_colors = False
+                additive_mode = True
+                additive_colors = ["black"]
+                set_curses_colors("additive", additive_colors)
+        elif ch in curses_ch_codes_color.keys() and additive_mode:
+            color = curses_ch_codes_color[ch]
+            if color in additive_colors:
+                additive_colors.pop(additive_colors.index(color))
+            else:
+                additive_colors.append(color)
+            set_curses_colors("additive", additive_colors)
         elif ch in curses_ch_codes_color.keys():
             color = curses_ch_codes_color[ch]
-            set_curses_colors(color)
+            set_curses_colors(color, [])
             cycle_colors = False
         elif ch in curses_number_ch_codes.keys():
             number = curses_number_ch_codes[ch]
@@ -169,6 +275,8 @@ def list_commands() -> None:
     print(" b       Enable black and white mode")
     print(" C       Enable color mode")
     print(" c       Enable cycle color mode")
+    print(" a       Enable additive mode (r,t,y,u,i,o,p,[) "
+          "to add and remove colors")
     print(" d       Reset to default settings")
     print(" 0 - 9   Delay. 0-Fast, 4-Default, 9-Slow")
     print("shift 1 - 5 Color cycle delay time. 1-Fast, 3-Default, 5-Slow")
@@ -201,6 +309,9 @@ def argument_parser(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
                         help="Screen saver mode.  Any key will quit")
     parser.add_argument("-c", dest="cycle_colors", action="store_true",
                         help="Cycle through colors")
+    parser.add_argument("-a", dest="additive", action="store_true",
+                        help="Additive color mode. Use color keys "
+                             "(r,t,y,u,i,o,p,[) to add and remove colors")
     parser.add_argument("--list_colors", action="store_true",
                         help="List available colors and exit.")
     parser.add_argument("--list_commands", action="store_true",
