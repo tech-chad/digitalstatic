@@ -12,6 +12,7 @@ Digital Static / Snow with Python 3 and curses
 - <kbd>b</kbd> = black and white mode
 - <kbd>C</kbd> = color mode
 - <kbd>c</kbd> = cycle color mode
+- <kbd>a</kbd> = Enable additive mode (r,t,y,u,i,o,p,[) to add and remove colors
 - <kbd>d</kbd> = reset to default
 - <kbd>0 to 9</kbd> = Delay
 - <kbd>shift 1 to 5</kbd> = cycle color delay
