@@ -14,8 +14,6 @@ from typing import List
 from typing import Optional
 from typing import Sequence
 
-import argparse_types  # type: ignore
-
 if sys.version_info >= (3, 8):
     import importlib.metadata as importlib_metadata
 else:
@@ -275,6 +273,20 @@ def color_type(value: str) -> str:
     raise argparse.ArgumentTypeError(f"{value} is an invalid color name")
 
 
+def pos_int(value: str) -> int:
+    """ Positive int value not including 0"""
+    error_msg = f"{value} is an invalid positive int value"
+    try:
+        int_value = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError(error_msg)
+    else:
+        if int_value <= 0:
+            raise argparse.ArgumentTypeError(error_msg)
+        else:
+            return int_value
+
+
 def list_commands() -> None:
     print("List of running commands:")
     print(" Q       To quit")
@@ -306,10 +318,10 @@ def argument_parser(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument("-C", dest="color", type=color_type, default=None,
                         metavar="COLOR", help="Set a single color to use")
     parser.add_argument("-s", dest="start_timer",
-                        type=argparse_types.pos_int, default=0,
+                        type=pos_int, default=0,
                         help="Set a start timer in seconds", metavar="SECONDS")
     parser.add_argument("-r", dest="run_timer",
-                        type=argparse_types.pos_int, default=0,
+                        type=pos_int, default=0,
                         metavar="SECONDS", help="Set a run timer in seconds")
     parser.add_argument("-S", dest="screen_saver", action="store_true",
                         help="Screen saver mode.  Any key will quit")

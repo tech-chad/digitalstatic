@@ -39,6 +39,24 @@ def test_color_type_error(test_values):
         dstatic.color_type(test_values)
 
 
+@pytest.mark.parametrize("test_values, expected_result", [
+    ("1", 1),
+    ("100", 100),
+    ("20000000", 20000000)
+])
+def test_pos_int(test_values, expected_result):
+    result = dstatic.pos_int(test_values)
+    assert result == expected_result
+
+
+@pytest.mark.parametrize("test_values", [
+    "0", "-1", "-40000", "10.6", "-2.6", "A", "letters", "*", "$", "0.0"
+])
+def test_pos_int_error(test_values):
+    with pytest.raises(dstatic.argparse.ArgumentTypeError):
+        dstatic.pos_int(test_values)
+
+
 @pytest.mark.parametrize("test_values, expected_results", [
     ([], 4), (["-d0"], 0), (["-d 1"], 1), (["-d", "2"], 2),
     (["-d3"], 3), (["-d 4"], 4), (["-d", "5"], 5), (["-d6"], 6),
