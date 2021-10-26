@@ -191,49 +191,52 @@ def static(screen, color_mode: str, args: argparse.Namespace):
         ch = screen.getch()
         if args.screen_saver and ch != -1:
             break
-        elif ch in [81, 113]:  # q, Q
+        if ch in [81, 113]:  # q, Q
             break
-        elif ch == 98:  # b
-            set_curses_colors("bw", [])
-            cycle_colors = False
-            additive_mode = False
-        elif ch == 67:  # C
-            set_curses_colors("color", [])
-            cycle_colors = False
-            additive_mode = False
-        elif ch == 99:  # c
-            cycle_colors = True
-            additive_mode = False
-        elif ch == 100 or ch == 68:  # d, D
-            cycle_colors = False
-            set_curses_colors("color", [])
-            delay_time = convert_delay_number_to_delay_time(4)
-            additive_mode = False
-        elif ch == 97:  # a
-            if additive_mode:
-                additive_mode = False
-                set_curses_colors("color", [])
-            else:
+        if args.disable_keys:
+            pass
+        else:
+            if ch == 98:  # b
+                set_curses_colors("bw", [])
                 cycle_colors = False
-                additive_mode = True
-                additive_colors = ["black"]
+                additive_mode = False
+            elif ch == 67:  # C
+                set_curses_colors("color", [])
+                cycle_colors = False
+                additive_mode = False
+            elif ch == 99:  # c
+                cycle_colors = True
+                additive_mode = False
+            elif ch == 100 or ch == 68:  # d, D
+                cycle_colors = False
+                set_curses_colors("color", [])
+                delay_time = convert_delay_number_to_delay_time(4)
+                additive_mode = False
+            elif ch == 97:  # a
+                if additive_mode:
+                    additive_mode = False
+                    set_curses_colors("color", [])
+                else:
+                    cycle_colors = False
+                    additive_mode = True
+                    additive_colors = ["black"]
+                    set_curses_colors("additive", additive_colors)
+            elif additive_mode and ch in ch_color_codes:
+                color = curses_ch_codes_color[ch]
+                if color in additive_colors:
+                    additive_colors.pop(additive_colors.index(color))
+                else:
+                    additive_colors.append(color)
                 set_curses_colors("additive", additive_colors)
-        elif additive_mode and ch in ch_color_codes:
-            color = curses_ch_codes_color[ch]
-            if color in additive_colors:
-                additive_colors.pop(additive_colors.index(color))
-            else:
-                additive_colors.append(color)
-            set_curses_colors("additive", additive_colors)
-        elif not additive_mode and ch in ch_color_codes:
-            color = curses_ch_codes_color[ch]
-            set_curses_colors(color, [])
-            cycle_colors = False
-        elif ch in ch_number_codes:
-            number = curses_number_ch_codes[ch]
-            delay_time = convert_delay_number_to_delay_time(number)
-        elif cycle_delay and ch in ch_shift_num_codes:
-            cycle_delay = curses_shift_num_codes[ch]
+            elif not additive_mode and ch in ch_color_codes:
+                color = curses_ch_codes_color[ch]
+                set_curses_colors(color, [])
+                cycle_colors = False
+            elif ch in ch_number_codes:
+                number = curses_number_ch_codes[ch]
+                delay_time = convert_delay_number_to_delay_time(number)
+            elif cycle_delay and ch in ch_shift_num_codes:
+                cycle_delay = curses_shift_num_codes[ch]
         sleep(delay_time)
 
     # clear screen before returning
@@ -330,6 +333,9 @@ def argument_parser(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument("-a", dest="additive", action="store_true",
                         help="Additive color mode. Use color keys "
                              "(r,t,y,u,i,o,p,[) to add and remove colors")
+    parser.add_argument("-D", dest="disable_keys", action="store_true",
+                        help="Disable keys while running except for 'Q' or 'q' and "
+                             "for ctrl-c. Does not affect screensaver mode.")
     parser.add_argument("--list_colors", action="store_true",
                         help="List available colors and exit.")
     parser.add_argument("--list_commands", action="store_true",

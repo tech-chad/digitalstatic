@@ -248,3 +248,31 @@ def test_dstatic_list_colors():
 def test_dstatic_display_version():
     with Runner(*dstatic_cmd("--version")) as h:
         h.await_text(f"{dstatic.version}")
+
+
+@pytest.mark.parametrize("test_keys", ["Q", "q", "1", "u", "+", "d", "a", " "])
+def test_dstatic_disable_keys_screensaver_works(test_keys):
+    with Runner(*dstatic_cmd("-D", "-S")) as h:
+        h.default_timeout = 3
+        h.await_text(chr(9617))
+        h.write(test_keys)
+        h.press("Enter")
+        h.await_exit()
+
+
+def test_dstatic_disable_keys_run_timer_exit():
+    """ Test auto exit when using run timer. """
+    with Runner(*dstatic_cmd("-r2", "-D")) as h:
+        h.default_timeout = 3
+        h.await_text(chr(9617))
+        h.await_exit()
+
+
+@pytest.mark.parametrize("test_keys", ["Q", "q"])
+def test_dstatic_disable_keys_quit_works(test_keys):
+    with Runner(*dstatic_cmd("-D")) as h:
+        h.default_timeout = 3
+        h.await_text(chr(9617))
+        h.write(test_keys)
+        h.press("Enter")
+        h.await_exit()
