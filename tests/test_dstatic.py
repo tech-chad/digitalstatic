@@ -3,6 +3,7 @@
 from unittest import mock
 
 import pytest
+import time
 from hecate import Runner
 
 from dstatic import dstatic
@@ -271,6 +272,37 @@ def test_dstatic_disable_keys_run_timer_exit():
 @pytest.mark.parametrize("test_keys", ["Q", "q"])
 def test_dstatic_disable_keys_quit_works(test_keys):
     with Runner(*dstatic_cmd("-D")) as h:
+        h.default_timeout = 3
+        h.await_text(chr(9617))
+        h.write(test_keys)
+        h.press("Enter")
+        h.await_exit()
+
+
+@pytest.mark.parametrize("test_keys", ["Q", "q"])
+def test_dstatic_disable_all_keys_check_quit(test_keys):
+    with Runner(*dstatic_cmd("--disable_all_keys", "--test_mode")) as h:
+        h.default_timeout = 1
+        h.await_text("0")
+        h.write(test_keys)
+        h.press("Enter")
+        time.sleep(1)
+        h.await_text("0")
+        sc = h.screenshot()
+        assert "$" not in sc
+
+
+def test_dstatic_disable_all_keys_run_timer_exit():
+    """ Test auto exit when using run timer. """
+    with Runner(*dstatic_cmd("-r2", "--disable_all_keys")) as h:
+        h.default_timeout = 3
+        h.await_text(chr(9617))
+        h.await_exit()
+
+
+@pytest.mark.parametrize("test_keys", ["Q", "q", "1", "u", "+", "d", "a", " "])
+def test_dstatic_disable_all_keys_screensaver_works(test_keys):
+    with Runner(*dstatic_cmd("--disable_all_keys", "-S")) as h:
         h.default_timeout = 3
         h.await_text(chr(9617))
         h.write(test_keys)

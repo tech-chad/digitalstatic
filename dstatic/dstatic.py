@@ -191,9 +191,9 @@ def static(screen, color_mode: str, args: argparse.Namespace):
         ch = screen.getch()
         if args.screen_saver and ch != -1:
             break
-        if ch in [81, 113]:  # q, Q
+        if ch in [81, 113] and not args.disable_all_keys:  # q, Q
             break
-        if args.disable_keys:
+        if args.disable_keys or args.disable_all_keys:
             pass
         else:
             if ch == 98:  # b
@@ -336,6 +336,9 @@ def argument_parser(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument("-D", dest="disable_keys", action="store_true",
                         help="Disable keys while running except for 'Q' or 'q' and "
                              "for ctrl-c. Does not affect screensaver mode.")
+    parser.add_argument("--disable_all_keys", action="store_true",
+                        help="Disable all keys while running including 'Q' and 'q.'"
+                        "Use ctrl-c to quit. Does not affect screensaver mode.")
     parser.add_argument("--list_colors", action="store_true",
                         help="List available colors and exit.")
     parser.add_argument("--list_commands", action="store_true",

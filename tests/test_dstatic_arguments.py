@@ -157,3 +157,11 @@ def test_argument_parsing_additive_color_mode(test_values, expected_result):
 def test_argument_parsing_disable_keys(test_values, expected_result):
     result = dstatic.argument_parser(test_values)
     assert result.disable_keys is expected_result
+
+
+@pytest.mark.parametrize("test_values, expected_result", [
+    ([], False), (["--disable_all_keys"], True),
+])
+def test_argument_parsing_disable_all_keys(test_values, expected_result):
+    result = dstatic.argument_parser(test_values)
+    assert result.disable_all_keys is expected_result
