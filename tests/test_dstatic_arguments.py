@@ -24,7 +24,7 @@ def test_positive_int_zero_to_nine_error(test_values):
 
 
 @pytest.mark.parametrize("test_value", [
-    "red", "green", "blue", "magenta", "yellow", "cyan", "black"
+    "red", "green", "blue", "magenta", "yellow", "cyan",
 ])
 def test_color_type_normal(test_value):
     result = dstatic.color_type(test_value)
@@ -32,7 +32,7 @@ def test_color_type_normal(test_value):
 
 
 @pytest.mark.parametrize("test_values", [
-    "purple", "orange", "color", "word", "12345", "", " ", "*(#"
+    "purple", "orange", "color", "word", "12345", "", " ", "*(#", "B&W"
 ])
 def test_color_type_error(test_values):
     with pytest.raises(dstatic.argparse.ArgumentTypeError):
@@ -71,7 +71,7 @@ def test_parser_arguments_delay(test_values, expected_results):
 @pytest.mark.parametrize("test_values, expected_results", [
     ([], False), (["-b"], True)
 ])
-def test_parser_arguments_black_white(test_values,expected_results):
+def test_parser_arguments_black_white(test_values, expected_results):
     """ Testing single argument -b (black & white mode). """
     result = dstatic.argument_parser(test_values)
     assert result.black_white == expected_results
@@ -86,6 +86,11 @@ def test_argument_parsing_start(test_values, expected_results):
     assert result.start_timer == expected_results
 
 
+def test_argument_parsing_start_timer_long_command():
+    result = dstatic.argument_parser(["--start_timer", "5"])
+    assert result.start_timer == 5
+
+
 @pytest.mark.parametrize("test_values, expected_results", [
     ([], 0), (["-r20"], 20), (["-r500"], 500)
 ])
@@ -95,8 +100,13 @@ def test_argument_parsing_run(test_values, expected_results):
     assert result.run_timer == expected_results
 
 
+def test_argument_parsing_run_long_command():
+    result = dstatic.argument_parser(["--run_timer", "5"])
+    assert result.run_timer == 5
+
+
 @pytest.mark.parametrize("test_values, expected_results", [
-    ([], False), (["-S"], True)
+    ([], False), (["-S"], True), (["--screen_saver"], True)
 ])
 def test_argument_parsing_screen_saver(test_values, expected_results):
     result = dstatic.argument_parser(test_values)
@@ -119,6 +129,11 @@ def test_argument_parsing_color(test_values, expected_results):
     assert result.color == expected_results
 
 
+def test_argument_parsing_color_long_option():
+    result = dstatic.argument_parser(["--color", "blue"])
+    assert result.color == "blue"
+
+
 @pytest.mark.parametrize("test_values, expected_results", [
     ([], False), (["--list_colors"], True)
 ])
@@ -136,15 +151,15 @@ def test_argument_parsing_test_mode(test_values, expected_results):
 
 
 @pytest.mark.parametrize("test_values, expected_results", [
-    ([], False), (["-c"], True)
+    ([], False), (["-c"], True), (["--cycle_colors"], True)
 ])
 def test_argument_parsing_cycle_colors(test_values, expected_results):
     result = dstatic.argument_parser(test_values)
-    assert result.cycle_colors is expected_results
+    assert result.cycle_color_mode is expected_results
 
 
 @pytest.mark.parametrize("test_values, expected_result", [
-    ([], False), (["-a"], True)
+    ([], False), (["-a"], True), (["--additive"], True)
 ])
 def test_argument_parsing_additive_color_mode(test_values, expected_result):
     result = dstatic.argument_parser(test_values)
@@ -152,7 +167,7 @@ def test_argument_parsing_additive_color_mode(test_values, expected_result):
 
 
 @pytest.mark.parametrize("test_values, expected_result", [
-    ([], False), (["-D"], True),
+    ([], False), (["-D"], True), (["--disable_keys"], True),
 ])
 def test_argument_parsing_disable_keys(test_values, expected_result):
     result = dstatic.argument_parser(test_values)
@@ -165,3 +180,10 @@ def test_argument_parsing_disable_keys(test_values, expected_result):
 def test_argument_parsing_disable_all_keys(test_values, expected_result):
     result = dstatic.argument_parser(test_values)
     assert result.disable_all_keys is expected_result
+
+
+def test_argument_parsing_version(capsys):
+    with pytest.raises(SystemExit):
+        dstatic.argument_parser(["--version"])
+    captured_output = capsys.readouterr().out
+    assert f"{dstatic.VERSION}\n" == captured_output
