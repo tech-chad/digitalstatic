@@ -259,7 +259,7 @@ def list_commands() -> None:
     print(" b                Toggle black and white mode")
     print(" C                Enable color mode (default mode)")
     print(" c                Toggle cycle color mode")
-    print(" a                Toggle additive mode (r,t,y,u,i,o,p,[) "
+    print(" a                Toggle additive mode (r,t,y,u,i,o) "
           "to add and remove colors")
     print(" d                Reset to default settings")
     print(f" 0 - 9            Delay. 0-Fast, {DEFAULT_SPEED}-Default, 9-Slow")
@@ -294,7 +294,7 @@ def argument_parser(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
                         action="store_true", help="Cycle through colors")
     parser.add_argument("-a", "--additive", action="store_true",
                         help="Additive color mode. Use color keys "
-                             "(r,t,y,u,i,o,p,[) to add and remove colors")
+                             "(r,t,y,u,i,o) to add and remove colors")
     parser.add_argument("-D", "--disable_keys", action="store_true",
                         help="Disable keys while running except for 'Q' or "
                              "'q' and for ctrl-c. Does not affect screensaver"
