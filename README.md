@@ -17,6 +17,7 @@ Digital Static / Snow with Python 3 and curses
 - <kbd>0 to 9</kbd> = Delay Speed
 - <kbd>shift 1 to 5</kbd> = Cycle color delay when inn cycle color mode
 - <kbd>l</kbd> = Clear the screen, wait 2 seconds and start again.
+- <kbd>f</kbd> = Freeze the screen until <kbd>f</kbd> is pressed again.  
 
 #### Colors
 Change colors while running

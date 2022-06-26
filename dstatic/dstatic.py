@@ -211,6 +211,11 @@ def static(screen, args: argparse.Namespace) -> None:
             screen.erase()
             screen.refresh()
             time.sleep(2)
+        elif ch == 102:  # f
+            while True:
+                ch = screen.getch()
+                if ch == 102:
+                    break
     # clear the screen before exit
     screen.erase()
     screen.refresh()
@@ -269,6 +274,7 @@ def list_commands() -> None:
     print(f" 0 - 9            Delay. 0-Fast, {DEFAULT_SPEED}-Default, 9-Slow")
     print(" shift 1 - 5      Color cycle time. 1-Fast, 3-Default, 5-Slow")
     print(" r,t,y,u,i,o,p,[  Set single color")
+    print(" f                Freeze screen until 'f' is pressed again.")
 
 
 def list_colors() -> None:

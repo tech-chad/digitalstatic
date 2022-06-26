@@ -584,3 +584,37 @@ def test_dstatic_clear_screen():
         sc = h.screenshot()
         assert "a" not in sc
         h.await_text("a")
+
+
+def test_dstatic_freeze_screen():
+    with Runner(*dstatic_cmd("--test_mode")) as h:
+        h.default_timeout = 3
+        h.await_text("a")
+        h.write("f")
+        h.press("Enter")
+        time.sleep(0.1)
+        sc1 = h.screenshot()
+        time.sleep(0.5)
+        sc2 = h.screenshot()
+        assert sc1 == sc2
+        h.write("f")
+        h.press("Enter")
+        time.sleep(0.1)
+        sc3 = h.screenshot()
+        assert sc3 != sc2
+
+
+def test_dstatic_freeze_screen_no_other_commands_working():
+    with Runner(*dstatic_cmd("--test_mode")) as h:
+        h.default_timeout = 3
+        h.await_text("a")
+        h.write("f")
+        h.press("Enter")
+        time.sleep(0.1)
+        sc1 = h.screenshot()
+        h.write("r")
+        h.press("Enter")
+        time.sleep(0.1)
+        assert h.screenshot() == sc1
+
+
