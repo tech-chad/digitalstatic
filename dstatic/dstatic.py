@@ -207,6 +207,10 @@ def static(screen, args: argparse.Namespace) -> None:
                 additive_list = ["B&W"]
                 num_of_pairs = setup_curses_colors_additive(additive_list)
                 color_changed = True
+        elif ch == 108:  # l
+            screen.erase()
+            screen.refresh()
+            time.sleep(2)
     # clear the screen before exit
     screen.erase()
     screen.refresh()

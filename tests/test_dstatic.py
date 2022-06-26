@@ -572,3 +572,15 @@ def test_dstatic_disable_all_keys_keys_not_working_default():
         h.await_text("A")
         sc = h.screenshot()
         assert "a" not in sc
+
+
+def test_dstatic_clear_screen():
+    with Runner(*dstatic_cmd("--test_mode")) as h:
+        h.default_timeout = 3
+        h.await_text("a")
+        h.write("l")
+        h.press("Enter")
+        time.sleep(0.2)
+        sc = h.screenshot()
+        assert "a" not in sc
+        h.await_text("a")

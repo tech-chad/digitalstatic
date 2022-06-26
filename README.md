@@ -16,6 +16,7 @@ Digital Static / Snow with Python 3 and curses
 - <kbd>d</kbd> = Reset to default settings
 - <kbd>0 to 9</kbd> = Delay Speed
 - <kbd>shift 1 to 5</kbd> = Cycle color delay when inn cycle color mode
+- <kbd>l</kbd> = Clear the screen, wait 2 seconds and start again.
 
 #### Colors
 Change colors while running
