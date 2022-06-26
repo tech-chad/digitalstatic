@@ -275,6 +275,7 @@ def list_commands() -> None:
     print(" shift 1 - 5      Color cycle time. 1-Fast, 3-Default, 5-Slow")
     print(" r,t,y,u,i,o,p,[  Set single color")
     print(" f                Freeze screen until 'f' is pressed again.")
+    print(" l                Clear the screen wait 2 seconds and start again")
 
 
 def list_colors() -> None:
