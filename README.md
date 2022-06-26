@@ -1,4 +1,4 @@
-# digitalstatic
+# digital_static
 Digital Static / Snow with Python 3 and curses
 
 ### How to install
@@ -8,25 +8,23 @@ Digital Static / Snow with Python 3 and curses
 ```dstatic```
 
 ### Commands
-- <kbd>Q</kbd> = to quit
-- <kbd>b</kbd> = black and white mode
-- <kbd>C</kbd> = color mode
-- <kbd>c</kbd> = cycle color mode
-- <kbd>a</kbd> = Enable additive mode (r,t,y,u,i,o,p,[) to add and remove colors
-- <kbd>d</kbd> = reset to default
-- <kbd>0 to 9</kbd> = Delay
-- <kbd>shift 1 to 5</kbd> = cycle color delay
+- <kbd>Q</kbd> or <kbd>q</kbd> = To quit
+- <kbd>b</kbd> = Toggle black and white mode
+- <kbd>C</kbd> = Switch to color mode
+- <kbd>c</kbd> = Toggle cycle color mode
+- <kbd>a</kbd> = Toggle enable additive mode <kbd>r,t,y,u,i,o</kbd> to add and remove colors
+- <kbd>d</kbd> = Reset to default settings
+- <kbd>0 to 9</kbd> = Delay Speed
+- <kbd>shift 1 to 5</kbd> = Cycle color delay when inn cycle color mode
 
 #### Colors
 Change colors while running
-- <kbd>r</kbd> = red
-- <kbd>t</kbd> = green
-- <kbd>y</kbd> = blue
-- <kbd>u</kbd> = yellow
-- <kbd>i</kbd> = magenta
-- <kbd>o</kbd> = cyan
-- <kbd>p</kbd> = white
-- <kbd>[</kbd> = black
+- <kbd>r</kbd> = Red
+- <kbd>t</kbd> = Green
+- <kbd>y</kbd> = Blue
+- <kbd>u</kbd> = Yellow
+- <kbd>i</kbd> = Magenta
+- <kbd>o</kbd> = Cyan
 
 ### Screen Shots
 ![screen1](https://i.fluffy.cc/PzDwTN3sZC6fbbnKL4SMSDQFwr1P1mTr.png)
