@@ -50,8 +50,8 @@ def setup_curses_colors(color: str) -> int:
     if curses.COLORS < 256:
         color = color + " 8"
     color_number_list = COLORS[color]
-    for i, color_number in enumerate(color_number_list):
-        curses.init_pair(i + 1, color_number, color_number)
+    [curses.init_pair(i + 1, color_number, color_number)
+     for i, color_number in enumerate(color_number_list)]
     return len(color_number_list)
 
 
@@ -62,8 +62,8 @@ def setup_curses_colors_additive(color_list: List[str]) -> int:
         if curses.COLORS < 256:
             color = color + " 8"
         color_list_numbers.extend(COLORS[color])
-    for i, color_number in enumerate(color_list_numbers):
-        curses.init_pair(i + 1, color_number, color_number)
+    [curses.init_pair(i + 1, color_number, color_number)
+     for i, color_number in enumerate(color_list_numbers)]
     return len(color_list_numbers)
 
 
@@ -103,14 +103,11 @@ def static(screen, args: argparse.Namespace) -> None:
             cycle_change = 3
         else:
             char = " "
-        for y in range(size_y):
-            for x in range(size_x - 1):
-                change = random.randint(1, 4)
-                if change >= 2 or color_changed:
-                    color = curses.color_pair(random.randint(1, num_of_pairs))
-                    screen.addstr(y, x, char, color)
-                else:
-                    pass  # do not change color for this cell
+
+        [screen.addstr(y, x, char, curses.color_pair(random.randint(1, num_of_pairs)))
+         for y in range(size_y) for x in range(size_x - 1)
+         if random.randint(1, 4) >= 2 or color_changed]
+
         screen.refresh()
         time.sleep(DELAY_SPEED[args.delay])
         if args.run_timer and datetime.datetime.now() >= end_time:
@@ -131,19 +128,18 @@ def static(screen, args: argparse.Namespace) -> None:
         if ch == curses.KEY_RESIZE:
             size_y, size_x = screen.getmaxyx()
             color_changed = True
+        if ch == -1:
+            continue
         if args.screen_saver and ch != -1:
-            break
+            run = False
         elif args.disable_all_keys:
             continue
         elif ch in [81, 113]:  # q Q
-            break
+            run = False
         elif args.disable_keys:
             continue
         elif ch == 98:  # b
-            if color_name == "B&W":
-                color_name = "all"
-            else:
-                color_name = "B&W"
+            color_name = "all" if color_name == "B&W" else "B&W"
             num_of_pairs = setup_curses_colors(color_name)
             color_changed = True
             args.cycle_color_mode = False
