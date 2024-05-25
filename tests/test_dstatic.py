@@ -618,3 +618,125 @@ def test_dstatic_freeze_screen_no_other_commands_working():
         assert h.screenshot() == sc1
 
 
+def test_dstatic_test_pattern1():
+    with Runner(*dstatic_cmd("--test_mode"), width=30, height=10) as h:
+        h.await_text("a")
+        h.press("z")
+        h.await_text("w")
+        sc = h.screenshot()
+        assert "wwwyyycccgggmmmrrrbbbBBB" in sc
+        expect = ("wwwyyycccgggmmmrrrbbbBBB\n"
+                  "wwwyyycccgggmmmrrrbbbBBB\n"
+                  "wwwyyycccgggmmmrrrbbbBBB\n"
+                  "wwwyyycccgggmmmrrrbbbBBB\n"
+                  "wwwyyycccgggmmmrrrbbbBBB\n"
+                  "wwwyyycccgggmmmrrrbbbBBB\n"
+                  "wwwyyycccgggmmmrrrbbbBBB\n"
+                  "wwwyyycccgggmmmrrrbbbBBB\n"
+                  "wwwyyycccgggmmmrrrbbbBBB\n\n")
+        assert sc == expect
+
+
+def test_dstatic_test_pattern2():
+    with Runner(*dstatic_cmd("--test_mode"), width=30, height=20) as h:
+        h.default_timeout = 2
+        h.await_text("a")
+        h.press("z")
+        h.press("enter")
+        h.await_text("w")
+        time.sleep(0.5)
+        h.press("z")
+        h.press("enter")
+        h.await_text("y")
+        time.sleep(0.5)
+        sc = h.screenshot()
+        assert "wwwwyyyyccccggggmmmmrrrrbbbb" in sc
+        assert "wwwyyycccgggmmmrrrbbbBBB" not in sc
+        expect = """wwwwyyyyccccggggmmmmrrrrbbbb
+wwwwyyyyccccggggmmmmrrrrbbbb
+wwwwyyyyccccggggmmmmrrrrbbbb
+wwwwyyyyccccggggmmmmrrrrbbbb
+wwwwyyyyccccggggmmmmrrrrbbbb
+wwwwyyyyccccggggmmmmrrrrbbbb
+wwwwyyyyccccggggmmmmrrrrbbbb
+wwwwyyyyccccggggmmmmrrrrbbbb
+wwwwyyyyccccggggmmmmrrrrbbbb
+wwwwyyyyccccggggmmmmrrrrbbbb
+wwwwyyyyccccggggmmmmrrrrbbbb
+wwwwyyyyccccggggmmmmrrrrbbbb
+wwwwyyyyccccggggmmmmrrrrbbbb
+wwwwyyyyccccggggmmmmrrrrbbbb
+wwwwyyyyccccggggmmmmrrrrbbbb
+wwwwyyyyccccggggmmmmrrrrbbbb
+wwwwyyyyccccggggmmmmrrrrbbbb
+wwwwyyyyccccggggmmmmrrrrbbbb
+BBBBbbbbrrrrmmmmggggccccyyyy\n
+"""
+        assert sc == expect
+
+
+def test_dstatic_test_pattern3():
+    with Runner(*dstatic_cmd("--test_mode"), width=42, height=20) as h:
+        h.default_timeout = 2
+        h.await_text("a")
+        h.press("z")
+        h.press("enter")
+        h.await_text("w")
+        time.sleep(0.5)
+        h.press("z")
+        h.press("enter")
+        h.await_text("y")
+        time.sleep(0.5)
+        h.press("z")
+        h.press("enter")
+        h.await_text("y")
+        time.sleep(0.5)
+        sc = h.screenshot()
+        assert "wwwwwwyyyyyyccccccggggggmmmmmmrrrrrrbbbbbb" in sc
+        assert "wwwwyyyyccccggggmmmmrrrrbbbb" not in sc
+        expect = """wwwwwwyyyyyyccccccggggggmmmmmmrrrrrrbbbbbb
+wwwwwwyyyyyyccccccggggggmmmmmmrrrrrrbbbbbb
+wwwwwwyyyyyyccccccggggggmmmmmmrrrrrrbbbbbb
+wwwwwwyyyyyyccccccggggggmmmmmmrrrrrrbbbbbb
+wwwwwwyyyyyyccccccggggggmmmmmmrrrrrrbbbbbb
+wwwwwwyyyyyyccccccggggggmmmmmmrrrrrrbbbbbb
+wwwwwwyyyyyyccccccggggggmmmmmmrrrrrrbbbbbb
+wwwwwwyyyyyyccccccggggggmmmmmmrrrrrrbbbbbb
+wwwwwwyyyyyyccccccggggggmmmmmmrrrrrrbbbbbb
+wwwwwwyyyyyyccccccggggggmmmmmmrrrrrrbbbbbb
+wwwwwwyyyyyyccccccggggggmmmmmmrrrrrrbbbbbb
+wwwwwwyyyyyyccccccggggggmmmmmmrrrrrrbbbbbb
+wwwwwwyyyyyyccccccggggggmmmmmmrrrrrrbbbbbb
+wwwwwwyyyyyyccccccggggggmmmmmmrrrrrrbbbbbb
+bbbbbbbbbbbbwwbbbbbbbbbbbb
+bbbbbbbbbbbbwwbbbbbbbbbbbb
+bbbbbbbbbbbbwwbbbbbbbbbbbb
+bbbbbbbbbbbbwwbbbbbbbbbbbb
+bbbbbbbbbbbbwwbbbbbbbbbbbb\n
+"""
+        print(sc)
+        assert sc == expect
+
+
+def test_dstatic_test_pattern_cycle_back_to_normal():
+    with Runner(*dstatic_cmd("--test_mode"), width=42, height=20) as h:
+        h.default_timeout = 3
+        h.await_text("a")
+        h.press("z")
+        h.press("enter")
+        h.await_text("w")
+        time.sleep(0.5)
+        h.press("z")
+        h.press("enter")
+        h.await_text("y")
+        time.sleep(0.5)
+        h.press("z")
+        h.press("enter")
+        h.await_text("y")
+        time.sleep(0.5)
+        h.press("z")
+        h.press("enter")
+        h.await_text("a")
+        time.sleep(0.5)
+        sc = h.screenshot()
+        assert "w" not in sc

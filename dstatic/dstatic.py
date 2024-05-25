@@ -43,6 +43,7 @@ CYCLE_COLOR_SPEED = [30, 80, 120, 160, 250]
 CURSES_NUM_SHIFT_CODES = {33: 1, 64: 2, 35: 3, 36: 4, 37: 5}
 CURSES_CODES_COLORS = {114: "red", 116: "green", 121: "blue", 117: "yellow",
                        105: "magenta", 111: "cyan"}
+NUMBER_OF_TEST_PATTERNS = 3
 
 
 def setup_curses_colors(color: str) -> int:
@@ -67,6 +68,100 @@ def setup_curses_colors_additive(color_list: List[str]) -> int:
     return len(color_list_numbers)
 
 
+def display_test_pattern1(screen, size_y: int, size_x: int,
+                          test_mode: bool) -> None:
+    color_names = {curses.COLOR_WHITE: "w", curses.COLOR_YELLOW: "y",
+                   curses.COLOR_CYAN: "c", curses.COLOR_GREEN: "g",
+                   curses.COLOR_MAGENTA: "m", curses.COLOR_RED: "r",
+                   curses.COLOR_BLUE: "b", curses.COLOR_BLACK: "B"}
+    screen.erase()
+    split_x = size_x // 8
+    colors = [curses.COLOR_WHITE, curses.COLOR_YELLOW, curses.COLOR_CYAN,
+              curses.COLOR_GREEN, curses.COLOR_MAGENTA, curses.COLOR_RED,
+              curses.COLOR_BLUE, curses.COLOR_BLACK]
+    for i, c in enumerate(colors, start=1):
+        curses.init_pair(i, c, c)
+    for i in range(1, 9):
+        ch = color_names[colors[i - 1]] if test_mode else " "
+        for y in range(size_y - 1):
+            for x in range(split_x * (i - 1), split_x * i):
+                screen.addstr(y, x, ch, curses.color_pair(i))
+    screen.refresh()
+
+
+def display_test_pattern2(screen, size_y: int, size_x: int,
+                          test_mode: bool) -> None:
+    color_names = {curses.COLOR_WHITE: "w", curses.COLOR_YELLOW: "y",
+                   curses.COLOR_CYAN: "c", curses.COLOR_GREEN: "g",
+                   curses.COLOR_MAGENTA: "m", curses.COLOR_RED: "r",
+                   curses.COLOR_BLUE: "b", curses.COLOR_BLACK: "B"}
+    colors = [curses.COLOR_WHITE, curses.COLOR_YELLOW, curses.COLOR_CYAN,
+              curses.COLOR_GREEN, curses.COLOR_MAGENTA, curses.COLOR_RED,
+              curses.COLOR_BLUE, curses.COLOR_BLACK]
+    for i, c in enumerate(colors, start=1):
+        curses.init_pair(i, c, c)
+    split_x = size_x // 7
+    split_y = size_y // 10
+    screen.erase()
+    for i in range(1, 8):
+        ch = color_names[colors[i - 1]] if test_mode else " "
+        for y in range(size_y - split_y):
+            for x in range(split_x * (i - 1), split_x * i):
+                screen.addstr(y, x, ch, curses.color_pair(i))
+    for i in range(1, 8):
+        ch = color_names[colors[9 - i - 1]] if test_mode else " "
+        for y in range(size_y - split_y, size_y - 1):
+            for x in range(split_x * (i - 1), split_x * i):
+                screen.addstr(y, x, ch, curses.color_pair(9 - i) + curses.A_BOLD)
+    screen.refresh()
+
+
+def display_test_pattern3(screen, size_y: int, size_x: int,
+                          test_mode: bool) -> None:
+    color_names = {curses.COLOR_WHITE: "w", curses.COLOR_YELLOW: "y",
+                   curses.COLOR_CYAN: "c", curses.COLOR_GREEN: "g",
+                   curses.COLOR_MAGENTA: "m", curses.COLOR_RED: "r",
+                   curses.COLOR_BLUE: "b", curses.COLOR_BLACK: "B",
+                   17: "n"}
+    if curses.COLORS < 256:
+        colors = [curses.COLOR_WHITE, curses.COLOR_YELLOW, curses.COLOR_CYAN,
+                  curses.COLOR_GREEN, curses.COLOR_MAGENTA, curses.COLOR_RED,
+                  curses.COLOR_BLUE, curses.COLOR_BLACK, curses.COLOR_BLUE]
+    else:
+        colors = [curses.COLOR_WHITE, curses.COLOR_YELLOW, curses.COLOR_CYAN,
+                  curses.COLOR_GREEN, curses.COLOR_MAGENTA, curses.COLOR_RED,
+                  curses.COLOR_BLUE, curses.COLOR_BLACK, 17]
+    for i, c in enumerate(colors, start=1):
+        curses.init_pair(i, c, c)
+    split_x = size_x // 7
+    split_y = size_y // 10
+    screen.erase()
+    for i in range(1, 8):
+        ch = color_names[colors[i - 1]] if test_mode else " "
+        for y in range(size_y - split_y * 4):
+            for x in range(split_x * (i - 1), split_x * i):
+                screen.addstr(y, x, ch, curses.color_pair(i))
+    for i in range(1, 8):
+        ch = color_names[colors[i - 1]] if test_mode else " "
+        for y in range(size_y - split_y * 4, size_y - split_y * 3):
+            for x in range(split_x * (i - 1), split_x * i):
+                screen.addstr(y, x, ch, curses.color_pair(9 - i) + curses.A_BOLD)
+    split_x = size_x // 6
+    ch = color_names[colors[8]] if test_mode else " "
+    for y in range(size_y - split_y * 3, size_y - 1):
+        for x in range(0, split_x + 5):
+            screen.addstr(y, x, ch, curses.color_pair(9))
+    ch = color_names[colors[0]] if test_mode else " "
+    for y in range(size_y - split_y * 3, size_y - 1):
+        for x in range(split_x + 5, split_x * 2):
+            screen.addstr(y, x, ch, curses.color_pair(1) + curses.A_BOLD)
+    ch = color_names[colors[8]] if test_mode else " "
+    for y in range(size_y - split_y * 3, size_y - 1):
+        for x in range(split_x * 2, split_x * 3 + 5):
+            screen.addstr(y, x, ch, curses.color_pair(9))
+    screen.refresh()
+
+
 def static(screen, args: argparse.Namespace) -> None:
     """ Main curses window. """
     curses.curs_set(0)  # Set the cursor to off.
@@ -75,6 +170,7 @@ def static(screen, args: argparse.Namespace) -> None:
     cycle_color = cycle_time = 0
     cycle_change = CYCLE_COLOR_SPEED[3]
     additive_list = ["B&W"]
+    test_pattern = 0
     if args.black_white:
         color_name = "B&W"
         num_of_pairs = setup_curses_colors(color_name)
@@ -98,15 +194,26 @@ def static(screen, args: argparse.Namespace) -> None:
     while run:
         if curses.is_term_resized(size_y, size_x):
             size_y, size_x = screen.getmaxyx()
+            if test_pattern:
+                screen.erase()
+                screen.refresh()
         if args.test_mode:
             char = color_name[0]
             cycle_change = 3
         else:
             char = " "
-
-        [screen.addstr(y, x, char, curses.color_pair(random.randint(1, num_of_pairs)))
-         for y in range(size_y) for x in range(size_x - 1)
-         if random.randint(1, 4) >= 2 or color_changed]
+        if test_pattern:
+            size_y, size_x = screen.getmaxyx()
+            if test_pattern == 1:
+                display_test_pattern1(screen, size_y, size_x, args.test_mode)
+            elif test_pattern == 2:
+                display_test_pattern2(screen, size_y, size_x, args.test_mode)
+            elif test_pattern == 3:
+                display_test_pattern3(screen, size_y, size_x, args.test_mode)
+        else:
+            [screen.addstr(y, x, char, curses.color_pair(random.randint(1, num_of_pairs)))
+             for y in range(size_y) for x in range(size_x - 1)
+             if random.randint(1, 4) >= 2 or color_changed]
 
         screen.refresh()
         time.sleep(DELAY_SPEED[args.delay])
@@ -153,6 +260,7 @@ def static(screen, args: argparse.Namespace) -> None:
         elif ch in [100, 68]:  # d or D
             color_name = "all"
             num_of_pairs = setup_curses_colors(color_name)
+            test_pattern = 0
             color_changed = True
             args.delay = DEFAULT_SPEED
             args.cycle_color_mode = False
@@ -207,6 +315,12 @@ def static(screen, args: argparse.Namespace) -> None:
             screen.erase()
             screen.refresh()
             time.sleep(2)
+        elif ch == 122:  # z
+            if test_pattern == NUMBER_OF_TEST_PATTERNS:
+                test_pattern = 0
+                num_of_pairs = setup_curses_colors(color_name)
+            else:
+                test_pattern += 1
         elif ch == 102:  # f
             while True:
                 ch = screen.getch()
@@ -272,6 +386,8 @@ def list_commands() -> None:
     print(" r,t,y,u,i,o,p,[  Set single color")
     print(" f                Freeze screen until 'f' is pressed again.")
     print(" l                Clear the screen wait 2 seconds and start again")
+    print(" z                Cycle through test patterns. Total test"
+          f" patterns {NUMBER_OF_TEST_PATTERNS}")
 
 
 def list_colors() -> None:
