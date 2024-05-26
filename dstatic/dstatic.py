@@ -162,6 +162,48 @@ def display_test_pattern3(screen, size_y: int, size_x: int,
     screen.refresh()
 
 
+def blue_screen_display(screen, size_y: int, size_x: int) -> None:
+    text = """
+
+  A problem has been detected and windows has been shut down to prevent damage
+  to your computer.
+
+  PFN_LIST_CORRUPT
+
+  If this is the first time you've seen this Stop error screen,
+  restart your computer. If this screen appears again, follow
+  theses steps:
+
+  Check to make sure any new hardware or software is properly installed.
+  If this is a new installation, ask your hardware or software manufacturer
+  for any windows updates you might need.
+
+  If problems continue, disable or remove any newly installed hardware
+  or software. Disable BIOS memory options such as caching or shadowing.
+  If you need to use Safe Mode to remove or disable components, restart
+  your computer, press F8 to select Advance Startup Options, and then
+  select Safe Mode.
+
+  Technical information:
+  *** STOP: 0x0000004e (0x00000099, 0x00900009, 0x00000900, 0x00000900)
+"""
+    curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLUE)
+    screen.erase()
+    text_list = text.splitlines()
+    for y in range(size_y):
+        if y < len(text_list):
+            screen.addstr(y, 0, text_list[y], curses.color_pair(1))
+            start_x = len(text_list[y])
+        else:
+            start_x = 0
+        for x in range(start_x, size_x):
+            try:
+                screen.addstr(y, x, " ", curses.color_pair(1))
+            except curses.error:
+                pass
+    screen.refresh()
+
+
 def static(screen, args: argparse.Namespace) -> None:
     """ Main curses window. """
     curses.curs_set(0)  # Set the cursor to off.
@@ -171,6 +213,7 @@ def static(screen, args: argparse.Namespace) -> None:
     cycle_change = CYCLE_COLOR_SPEED[3]
     additive_list = ["B&W"]
     test_pattern = 0
+    blue_screen = 0
     if args.black_white:
         color_name = "B&W"
         num_of_pairs = setup_curses_colors(color_name)
@@ -210,6 +253,9 @@ def static(screen, args: argparse.Namespace) -> None:
                 display_test_pattern2(screen, size_y, size_x, args.test_mode)
             elif test_pattern == 3:
                 display_test_pattern3(screen, size_y, size_x, args.test_mode)
+        elif blue_screen:
+            size_y, size_x = screen.getmaxyx()
+            blue_screen_display(screen, size_y, size_x)
         else:
             [screen.addstr(y, x, char, curses.color_pair(random.randint(1, num_of_pairs)))
              for y in range(size_y) for x in range(size_x - 1)
@@ -321,6 +367,15 @@ def static(screen, args: argparse.Namespace) -> None:
                 num_of_pairs = setup_curses_colors(color_name)
             else:
                 test_pattern += 1
+        elif ch == 119:  # w
+            if blue_screen == 1:
+                blue_screen = 0
+                screen.erase()
+                screen.refresh()
+                num_of_pairs = setup_curses_colors(color_name)
+            else:
+                blue_screen += 1
+
         elif ch == 102:  # f
             while True:
                 ch = screen.getch()

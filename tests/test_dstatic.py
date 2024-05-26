@@ -740,3 +740,19 @@ def test_dstatic_test_pattern_cycle_back_to_normal():
         time.sleep(0.5)
         sc = h.screenshot()
         assert "w" not in sc
+
+
+def test_dstatic_blue_screen():
+    with Runner(*dstatic_cmd("--test_mode"), width=78, height=23) as h:
+        h.default_timeout = 3
+        h.await_text("a")
+        h.press("w")
+        h.press("enter")
+        h.await_text("A problem has been")
+        time.sleep(0.5)
+        h.press("w")
+        h.press("enter")
+        h.await_text("a")
+        time.sleep(0.25)
+        sc = h.screenshot()
+        assert "A problem has been" not in sc
