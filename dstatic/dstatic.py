@@ -257,10 +257,17 @@ def static(screen, args: argparse.Namespace) -> None:
             size_y, size_x = screen.getmaxyx()
             blue_screen_display(screen, size_y, size_x)
         else:
-            [screen.addstr(y, x, char, curses.color_pair(random.randint(1, num_of_pairs)))
-             for y in range(size_y) for x in range(size_x - 1)
-             if random.randint(1, 4) >= 2 or color_changed]
-
+            if color_changed:
+                [screen.addstr(y, x, char,
+                               curses.color_pair(random.randint(1, num_of_pairs)))
+                 for y in range(size_y) for x in range(size_x - 1)]
+            else:
+                [screen.addstr(
+                    random.randint(0, size_y - 1),
+                    random.randint(0, size_x - 2),
+                    char,
+                    curses.color_pair(random.randint(1, num_of_pairs)))
+                 for _ in range((size_y * (size_x - 1)) - 15)]
         screen.refresh()
         time.sleep(DELAY_SPEED[args.delay])
         if args.run_timer and datetime.datetime.now() >= end_time:
