@@ -450,6 +450,7 @@ def list_commands() -> None:
     print(" l                Clear the screen wait 2 seconds and start again")
     print(" z                Cycle through test patterns. Total test"
           f" patterns {NUMBER_OF_TEST_PATTERNS}")
+    print(" w                Display fake blue screen of death")
 
 
 def list_colors() -> None:
