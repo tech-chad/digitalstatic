@@ -1,6 +1,8 @@
 # digital_static
 Digital Static / Snow with Python 3 and curses
 
+Python 3.7 +
+
 ### How to install
 ```pip install digital_static```
 
@@ -17,7 +19,9 @@ Digital Static / Snow with Python 3 and curses
 - <kbd>0 to 9</kbd> = Delay Speed
 - <kbd>shift 1 to 5</kbd> = Cycle color delay when inn cycle color mode
 - <kbd>l</kbd> = Clear the screen, wait 2 seconds and start again.
-- <kbd>f</kbd> = Freeze the screen until <kbd>f</kbd> is pressed again.  
+- <kbd>f</kbd> = Freeze the screen until <kbd>f</kbd> is pressed again.
+- <kbd>z</kbd> = Cycle through test patterns
+- <kbd>w</kbd> = Display a fake blue screen of death 
 
 #### Colors
 Change colors while running
@@ -34,4 +38,7 @@ Change colors while running
 ![screen2](https://i.fluffy.cc/p38RJxwTn7rRCHKkFrxPKzM9CTK84MgP.png)
 
 ![screen3](https://i.fluffy.cc/sLz0sqC8pFdf27twrh6z4BJ27StlG7jc.png)
+
+Test Pattern
+![screen4](https://i.fluffy.cc/mGlGNWhG8CWFX2m266pxhpsm5GDj2Db7.png)
 
